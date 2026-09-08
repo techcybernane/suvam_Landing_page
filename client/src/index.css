@@ -12,8 +12,8 @@ body {
 }
 
 ::selection {
-  background: #b6f21f;
-  color: #0e2415;
+  background: #4c8dff;
+  color: #ffffff;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -53,13 +53,25 @@ body {
   }
 }
 
+@keyframes spin-slow-reverse {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes scan-sweep {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes pulse-dot {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(14, 36, 21, 0.35);
+    box-shadow: 0 0 0 0 rgba(11, 35, 80, 0.35);
   }
   50% {
-    box-shadow: 0 0 0 6px rgba(14, 36, 21, 0);
+    box-shadow: 0 0 0 6px rgba(11, 35, 80, 0);
   }
 }
 
@@ -75,8 +87,52 @@ body {
   animation: spin-slow 40s linear infinite;
 }
 
+.animate-spin-slow-reverse {
+  animation: spin-slow-reverse 40s linear infinite;
+}
+
+.animate-orbit {
+  animation: spin-slow 34s linear infinite;
+}
+
+.animate-orbit-reverse {
+  animation: spin-slow-reverse 34s linear infinite;
+}
+
+.animate-scan {
+  animation: scan-sweep 8s linear infinite;
+}
+
 .animate-pulse-dot {
   animation: pulse-dot 2.2s ease-in-out infinite;
+}
+
+@keyframes gradient-pan {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-gradient {
+  background-size: 220% 220%;
+  animation: gradient-pan 16s ease infinite;
+}
+
+.animate-marquee {
+  animation: marquee 32s linear infinite;
 }
 
 /*
@@ -93,11 +149,11 @@ body {
   }
 
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-pill px-6 py-3 text-sm font-semibold transition-all duration-200 whitespace-nowrap;
+    @apply inline-flex items-center justify-center gap-2 rounded-pill px-7 py-3.5 text-sm font-semibold transition-all duration-200 whitespace-nowrap;
   }
 
   .btn-primary {
-    @apply btn bg-lime text-forest shadow-card hover:bg-lime-dark hover:-translate-y-0.5;
+    @apply btn bg-lime text-white shadow-card hover:bg-lime-dark hover:-translate-y-0.5;
   }
 
   .btn-outline {
@@ -117,7 +173,12 @@ body {
   }
 
   .eyebrow {
-    @apply inline-flex items-center rounded-pill bg-forest px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-lime;
+    @apply inline-flex items-center gap-2 rounded-pill bg-forest px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-lime-glow;
+  }
+
+  /* Editorial section label — a small numbered/kicker line above headings. */
+  .section-label {
+    @apply inline-flex items-center gap-2.5 text-xs font-bold uppercase tracking-[0.2em] text-lime-dark;
   }
 
   .card {
@@ -125,7 +186,7 @@ body {
   }
 
   .section-pad {
-    @apply py-20 md:py-28;
+    @apply py-24 md:py-32;
   }
 
   .focus-ring {
@@ -145,7 +206,7 @@ body {
   }
 
   .bg-dot-grid {
-    background-image: radial-gradient(rgba(14, 36, 21, 0.14) 1px, transparent 1px);
+    background-image: radial-gradient(rgba(11, 35, 80, 0.12) 1px, transparent 1px);
     background-size: 22px 22px;
   }
 

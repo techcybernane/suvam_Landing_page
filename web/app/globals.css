@@ -1,0 +1,472 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: "Space Grotesk";
+  --font-sans: "Manrope";
+  --font-serif: "Instrument Serif";
+  --font-mono: "JetBrains Mono";
+  --nav-h: 76px;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--nav-h);
+}
+
+/* Lenis smooth-scroll: hand scrolling to Lenis when active. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+body {
+  @apply bg-void text-bone antialiased;
+  font-family: var(--font-sans), Manrope, system-ui, sans-serif;
+  overflow-x: clip;
+  line-height: 1.6;
+  font-feature-settings: "ss01" on;
+}
+
+/* Display faces are tighter and heavier than body copy — the size contrast is
+   what makes the editorial layout read as "poster + paragraph". */
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display), "Space Grotesk", system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.032em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* The admin dashboard is a light surface and opts out of the dark body defaults. */
+.admin-surface {
+  @apply bg-cream text-ink;
+  font-family: var(--font-sans), Manrope, system-ui, sans-serif;
+}
+.admin-surface h1,
+.admin-surface h2,
+.admin-surface h3,
+.admin-surface h4 {
+  font-family: var(--font-sans), Manrope, system-ui, sans-serif;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+::selection {
+  background: #4da3ff;
+  color: #04070f;
+}
+
+:focus-visible {
+  outline: 2px solid #4da3ff;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+}
+::-webkit-scrollbar-track {
+  background: #04070f;
+}
+::-webkit-scrollbar-thumb {
+  background: #17243c;
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #24365a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------------------------------------------------------------- keyframes */
+
+/* Expanding ring behind a "live" status dot. */
+@keyframes blip {
+  0% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  70%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+/* Slow opacity pulse for ambient glows and idle indicators. */
+@keyframes breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes gradient-pan {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes kenburns {
+  from {
+    transform: scale(1.02);
+  }
+  to {
+    transform: scale(1.14);
+  }
+}
+
+/* Sweeping highlight that travels along a 1px rule. */
+@keyframes trace-x {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(300%);
+  }
+}
+
+.animate-blip {
+  animation: blip 2.6s ease-out infinite;
+}
+.animate-breathe {
+  animation: breathe 5s ease-in-out infinite;
+}
+.animate-float {
+  animation: float-slow 6s ease-in-out infinite;
+}
+.animate-spin-slow {
+  animation: spin-slow 40s linear infinite;
+}
+.animate-gradient {
+  background-size: 220% 220%;
+  animation: gradient-pan 16s ease infinite;
+}
+.animate-marquee {
+  animation: marquee var(--marquee-duration, 32s) linear infinite;
+}
+.animate-kenburns {
+  animation: kenburns 22s ease-out infinite alternate;
+}
+.animate-trace {
+  animation: trace-x 3.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+/*
+ * Custom component classes must live in @layer components so Tailwind places
+ * them BEFORE the utilities layer in the final stylesheet. Without this,
+ * plain source order puts these declarations after @tailwind utilities,
+ * which means at equal specificity they'd beat a utility class placed on the
+ * same element (e.g. bg-forest on .admin-card would lose to .admin-card's
+ * own bg-white) — the opposite of how Tailwind is meant to cascade.
+ */
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-[1240px] px-6 md:px-10;
+  }
+
+  .section-pad {
+    @apply py-20 md:py-28;
+  }
+
+  /* --- buttons --- */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-pill px-7 py-3.5 text-sm font-semibold transition-all duration-300 ease-editorial whitespace-nowrap;
+  }
+
+  .btn-primary {
+    @apply btn bg-signal text-void hover:bg-volt hover:-translate-y-0.5;
+  }
+
+  .btn-outline {
+    @apply btn border border-white/15 bg-white/[0.04] text-bone backdrop-blur-sm hover:border-signal/50 hover:bg-white/[0.09];
+  }
+
+  .btn-ghost {
+    @apply btn text-bone/70 hover:text-bone;
+  }
+
+  /* On the light "bone" bands the dark button is the primary one. */
+  .btn-dark {
+    @apply btn bg-void text-bone hover:bg-steel hover:-translate-y-0.5;
+  }
+
+  .btn-on-light {
+    @apply btn border border-void/15 bg-transparent text-void hover:border-void/40 hover:bg-void/5;
+  }
+
+  /* --- labels --- */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 rounded-pill border border-signal/30 bg-signal/10 px-4 py-1.5 font-mono text-fluid-xs font-semibold uppercase tracking-[0.1em] text-signal-soft sm:tracking-[0.18em];
+  }
+
+  /* Numbered kicker: "01 / What we do" */
+  .section-label {
+    @apply inline-flex items-center gap-3 font-mono text-fluid-xs font-semibold uppercase tracking-[0.22em] text-signal;
+  }
+
+  .pill-tag {
+    @apply inline-flex items-center rounded-pill border border-white/10 bg-white/[0.04] px-4 py-2 text-fluid-xs font-semibold text-bone/70;
+  }
+
+  /* --- surfaces --- */
+  .card {
+    @apply rounded-[22px] border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm;
+  }
+
+  .card-light {
+    @apply rounded-[22px] border border-void/[0.08] bg-white;
+  }
+
+  .focus-ring {
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2 focus-visible:ring-offset-void;
+  }
+
+  /* --- admin (light) --- */
+  .admin-input {
+    @apply w-full rounded-lg border border-line bg-white px-3 py-2 text-sm text-ink outline-none focus:border-forest focus:ring-1 focus:ring-forest;
+  }
+
+  .admin-label {
+    @apply mb-1.5 block text-xs font-semibold uppercase tracking-wide text-ink-soft;
+  }
+
+  .admin-card {
+    @apply rounded-xl2 border border-line bg-white p-6 shadow-card;
+  }
+
+  /* --- textures --- */
+  .bg-grid {
+    background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 0),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.035) 1px, transparent 0);
+    background-size: 72px 72px;
+  }
+
+  .bg-grid-dark {
+    background-image: linear-gradient(90deg, rgba(4, 7, 15, 0.06) 1px, transparent 0),
+      linear-gradient(180deg, rgba(4, 7, 15, 0.06) 1px, transparent 0);
+    background-size: 72px 72px;
+  }
+
+  .bg-dot-grid {
+    background-image: radial-gradient(rgba(11, 35, 80, 0.12) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  .bg-dot-grid-light {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+
+  /* Fixed film-grain wash over the whole page. */
+  .grain::before {
+    content: "";
+    position: fixed;
+    inset: -50%;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0.032;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Soft-clip the ends of a horizontal scroller / marquee. */
+  .fade-x {
+    mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+    -webkit-mask-image: linear-gradient(90deg, transparent, black 8%, black 92%, transparent);
+  }
+
+  .mask-fade-b {
+    mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+  }
+
+  /* Outlined display type (giant background numerals, footer wordmark). */
+  .stroke-text {
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.16);
+    color: transparent;
+  }
+
+  .stroke-text-dark {
+    -webkit-text-stroke: 1px rgba(4, 7, 15, 0.14);
+    color: transparent;
+  }
+
+  /* Serif-italic accent word inside a display heading. */
+  .accent {
+    font-family: var(--font-serif), Georgia, serif;
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: 0;
+    color: #cfe2ff;
+    text-shadow: 0 0 46px rgba(77, 163, 255, 0.35);
+  }
+
+  .accent-dark {
+    font-family: var(--font-serif), Georgia, serif;
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: 0;
+    @apply text-signal-deep;
+  }
+
+  /* Hide the scrollbar on snap carousels without losing keyboard scrolling. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Hero carousel: the active slide's progress bar fills over one autoplay tick. */
+@keyframes track-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/*
+ * Bleed track for the showcase carousel: the first card lines up with the page
+ * container while the rest run off the right edge, so there is always a
+ * partially-visible card hinting that the row scrolls. Expressed here rather
+ * than as an arbitrary Tailwind class because the max()/calc() pair does not
+ * survive class-name parsing.
+ */
+.track-inset {
+  padding-left: max(1.5rem, calc((100vw - 1240px) / 2 + 1.5rem));
+  padding-right: 1.5rem;
+  /* Must mirror the padding, or scroll-snap aligns cards to the padding edge
+     and the track lands pre-scrolled with the first card off-screen. */
+  scroll-padding-left: max(1.5rem, calc((100vw - 1240px) / 2 + 1.5rem));
+}
+
+@media (min-width: 768px) {
+  .track-inset {
+    padding-left: max(2.5rem, calc((100vw - 1240px) / 2 + 2.5rem));
+    padding-right: 2.5rem;
+    scroll-padding-left: max(2.5rem, calc((100vw - 1240px) / 2 + 2.5rem));
+  }
+}
+
+/*
+ * Content that a pinned section can afford to drop. While a frame is pinned it
+ * must fit inside one screen, and on a short laptop window the supporting
+ * paragraph is the first thing worth losing — it still shows on tall screens
+ * and on mobile, where the section is not pinned at all.
+ */
+@media (min-width: 1024px) and (max-height: 839px) {
+  .pin-optional {
+    display: none;
+  }
+}
+
+/* Lead-capture modal entrance. */
+@keyframes popup-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popup-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/*
+ * Pinned-section plumbing. These MUST stay in sync with the gate inside
+ * useScrollPin (min-width 1024, min-height 780): the CSS decides whether the
+ * frame sticks, the JS decides whether it advances, and if only one of them
+ * engages the section sticks in place showing a single step forever.
+ *
+ * Declared here rather than as `lg:` utilities because Tailwind's breakpoints
+ * are width-only and this gate needs a height condition too.
+ */
+@media (min-width: 1024px) and (min-height: 780px) {
+  .pin-wrap {
+    height: var(--pin-height);
+  }
+
+  .pin-frame {
+    position: sticky;
+    top: 0;
+    display: flex;
+    height: 100vh;
+    flex-direction: column;
+    justify-content: center;
+    /* clears the fixed header */
+    padding-top: var(--nav-h);
+    padding-bottom: 0;
+  }
+}

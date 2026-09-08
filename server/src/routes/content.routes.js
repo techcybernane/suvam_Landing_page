@@ -15,22 +15,23 @@ function getPageOr404(content, slug, res) {
 
 // Public: brand, nav, footer — shared across every page
 router.get("/meta", (req, res) => {
-  const { brand, nav, footer } = getContent();
-  res.json({ brand, nav, footer });
+  const { brand, nav, footer, popup } = getContent();
+  res.json({ brand, nav, footer, popup });
 });
 
 // Admin: update brand/nav/footer
 router.put("/meta", requireAuth, (req, res) => {
   const content = getContent();
-  const { brand, nav, footer } = req.body || {};
+  const { brand, nav, footer, popup } = req.body || {};
   const next = {
     ...content,
     brand: brand ?? content.brand,
     nav: nav ?? content.nav,
     footer: footer ?? content.footer,
+    popup: popup ? { ...content.popup, ...popup } : content.popup,
   };
   saveContent(next);
-  res.json({ brand: next.brand, nav: next.nav, footer: next.footer });
+  res.json({ brand: next.brand, nav: next.nav, footer: next.footer, popup: next.popup });
 });
 
 // Public: list of pages (slug + title) — used for admin nav and sitemaps

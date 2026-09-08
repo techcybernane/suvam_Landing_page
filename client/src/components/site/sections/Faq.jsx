@@ -11,8 +11,8 @@ export default function Faq({ data, faqs }) {
       <div className="container-page">
         <Reveal className="mx-auto max-w-xl text-center">
           {data.tag && <span className="eyebrow">{data.tag}</span>}
-          <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">{data.heading}</h2>
-          {data.subheading && <p className="mt-3 text-sm text-ink-soft">{data.subheading}</p>}
+          <h2 className="mt-5 text-4xl font-extrabold leading-[1.08] tracking-[-0.02em] text-ink sm:text-5xl">{data.heading}</h2>
+          {data.subheading && <p className="mt-4 text-base text-ink-soft">{data.subheading}</p>}
         </Reveal>
 
         <Reveal delay={120} className="mx-auto mt-12 max-w-2xl divide-y divide-line rounded-xl2 border border-line bg-white shadow-card">

@@ -47,5 +47,5 @@ ensureSeeded();
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
-  console.log(`Vertexa API listening on http://localhost:${PORT}`);
+  console.log(`CybernaNet API listening on http://localhost:${PORT}`);
 });

@@ -33,8 +33,8 @@ export default function Contact({ data }) {
       <div className="container-page grid gap-16 lg:grid-cols-[0.9fr_1.1fr]">
         <Reveal>
           {data.tag && <span className="eyebrow">{data.tag}</span>}
-          <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">{data.heading}</h2>
-          {data.subheading && <p className="mt-4 text-ink-soft leading-relaxed">{data.subheading}</p>}
+          <h2 className="mt-5 text-4xl font-extrabold leading-[1.08] tracking-[-0.02em] text-ink sm:text-5xl">{data.heading}</h2>
+          {data.subheading && <p className="mt-5 text-base leading-relaxed text-ink-soft md:text-lg">{data.subheading}</p>}
 
           <div className="mt-10 space-y-5">
             {data.companyEmail && (

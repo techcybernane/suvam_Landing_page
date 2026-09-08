@@ -45,14 +45,14 @@ export default function PageHero({ data }) {
               <span className="eyebrow">{data.eyebrow}</span>
             </Reveal>
           )}
-          <Reveal delay={80}>
-            <h1 className="mt-5 text-3xl font-extrabold leading-tight tracking-tight text-ink sm:text-4xl lg:text-5xl">
+          <Reveal eager variant="clip" delay={80}>
+            <h1 className="mt-5 text-4xl font-extrabold leading-[1.05] tracking-[-0.02em] text-ink sm:text-5xl lg:text-6xl">
               {data.heading}
             </h1>
           </Reveal>
           {data.subtext && (
-            <Reveal delay={160}>
-              <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-ink-soft md:text-lg">
+            <Reveal eager variant="blur" delay={200}>
+              <p className="mx-auto mt-7 max-w-2xl text-base leading-relaxed text-ink-soft md:text-lg">
                 {data.subtext}
               </p>
             </Reveal>

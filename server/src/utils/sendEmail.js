@@ -30,8 +30,8 @@ function getTransporter() {
  * console so local development and demos work without a mail provider on hand.
  */
 export async function sendEmail({ to, subject, html, text }) {
-  const fromName = process.env.SMTP_FROM_NAME || "Vertexa Technologies";
-  const fromEmail = process.env.SMTP_FROM_EMAIL || "hello@vertexa.io";
+  const fromName = process.env.SMTP_FROM_NAME || "CybernaNet";
+  const fromEmail = process.env.SMTP_FROM_EMAIL || "hello@cybernanet.com";
   const from = `"${fromName}" <${fromEmail}>`;
   const recipients = Array.isArray(to) ? to.join(", ") : to;
 

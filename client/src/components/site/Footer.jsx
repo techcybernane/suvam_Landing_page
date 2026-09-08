@@ -26,14 +26,14 @@ export default function Footer({ brand, footer }) {
               </span>
               <div>
                 <p className="text-2xl font-extrabold leading-none tracking-tight text-white">{brand?.name || "CybernaNet"}</p>
-                <p className="mt-1.5 text-xs font-bold uppercase tracking-widest text-lime">{brand?.tagline}</p>
+                <p className="mt-1.5 text-xs font-bold uppercase tracking-widest text-lime-glow">{brand?.tagline}</p>
               </div>
             </div>
             <p className="mt-6 max-w-xs text-sm leading-relaxed text-white/60">{footer.tagline}</p>
 
             <SmartLink
               href="/contact"
-              className="mt-6 inline-flex items-center gap-2 rounded-pill bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-lime hover:text-forest"
+              className="mt-6 inline-flex items-center gap-2 rounded-pill bg-white/10 px-5 py-2.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-lime hover:text-white"
             >
               Start a Conversation
               <ArrowUpRight className="h-4 w-4" />
@@ -42,13 +42,13 @@ export default function Footer({ brand, footer }) {
 
           {footer.columns?.map((col) => (
             <div key={col.id}>
-              <h4 className="text-sm font-bold uppercase tracking-wide text-lime">{col.title}</h4>
+              <h4 className="text-sm font-bold uppercase tracking-wide text-lime-glow">{col.title}</h4>
               <ul className="mt-5 space-y-3">
                 {col.links?.map((link) => (
                   <li key={link.id}>
                     <SmartLink
                       href={link.href}
-                      className="inline-flex items-center gap-2 text-sm text-white/60 transition-all duration-200 hover:translate-x-0.5 hover:text-lime"
+                      className="inline-flex items-center gap-2 text-sm text-white/60 transition-all duration-200 hover:translate-x-0.5 hover:text-lime-glow"
                     >
                       {link.href?.startsWith("tel:") && <Phone className="h-3.5 w-3.5 shrink-0" />}
                       {link.href?.startsWith("mailto:") && <Mail className="h-3.5 w-3.5 shrink-0" />}
@@ -66,7 +66,7 @@ export default function Footer({ brand, footer }) {
           <p className="text-xs text-white/40">{footer.copyright}</p>
           <div className="flex gap-5">
             {footer.social?.map((s) => (
-              <SmartLink key={s.id} href={s.href} className="text-xs font-medium text-white/60 hover:text-lime">
+              <SmartLink key={s.id} href={s.href} className="text-xs font-medium text-white/60 hover:text-lime-glow">
                 {s.label}
               </SmartLink>
             ))}

@@ -2,6 +2,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
+import ScrollProgress from "../ui/ScrollProgress.jsx";
 import { useSiteMeta } from "../../hooks/useSiteMeta.js";
 
 export default function PublicLayout() {
@@ -31,6 +32,7 @@ export default function PublicLayout() {
 
   return (
     <div className="min-h-screen bg-cream">
+      <ScrollProgress />
       <Header brand={meta.brand} nav={meta.nav} />
       <main>
         <Outlet />

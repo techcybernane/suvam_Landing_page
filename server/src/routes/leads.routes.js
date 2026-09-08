@@ -8,17 +8,24 @@ const router = Router();
 
 const STATUSES = ["New", "Contacted", "In Progress", "Converted", "Closed"];
 
+// Where a submission came from. Anything the client sends is matched against
+// this list so the field can be trusted when filtering in the admin panel.
+const SOURCES = ["Contact Form", "Popup Form"];
+
 function renderTemplate(str, vars) {
   return String(str || "").replace(/{{\s*(\w+)\s*}}/g, (_, key) => vars[key] ?? "");
 }
 
 // Public: contact form submission
 router.post("/", async (req, res) => {
-  const { name, email, phone, company, service, message } = req.body || {};
-  if (!name || !email || !message) {
-    return res.status(400).json({ error: "name, email, and message are required" });
+  const { name, email, phone, company, service, message, source } = req.body || {};
+  // The popup form is deliberately short, so a message is optional there; the
+  // contact form still requires one client-side.
+  if (!name || !email) {
+    return res.status(400).json({ error: "name and email are required" });
   }
 
+  const leadSource = SOURCES.includes(source) ? source : "Contact Form";
   const lead = leads.create({
     id: randomUUID(),
     name,
@@ -26,9 +33,9 @@ router.post("/", async (req, res) => {
     phone: phone || "",
     company: company || "",
     service: service || "",
-    message,
+    message: message || "",
     status: "New",
-    source: "Contact Form",
+    source: leadSource,
     createdAt: new Date().toISOString(),
   });
 
@@ -38,9 +45,9 @@ router.post("/", async (req, res) => {
     if (settings.leadRecipients?.length) {
       await sendEmail({
         to: settings.leadRecipients,
-        subject: `New website lead: ${name}`,
-        text: `New contact form submission\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone || "—"}\nOrganization: ${company || "—"}\nService Required: ${service || "—"}\n\nMessage:\n${message}`,
-        html: `<h2>New website lead</h2><p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Phone:</strong> ${phone || "—"}</p><p><strong>Organization:</strong> ${company || "—"}</p><p><strong>Service Required:</strong> ${service || "—"}</p><p><strong>Message:</strong><br/>${String(message).replace(/\n/g, "<br/>")}</p>`,
+        subject: `New website lead (${leadSource}): ${name}`,
+        text: `New ${leadSource} submission\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone || "—"}\nOrganization: ${company || "—"}\nService Required: ${service || "—"}\n\nMessage:\n${message}`,
+        html: `<h2>New website lead — ${leadSource}</h2><p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Phone:</strong> ${phone || "—"}</p><p><strong>Organization:</strong> ${company || "—"}</p><p><strong>Service Required:</strong> ${service || "—"}</p><p><strong>Message:</strong><br/>${String(message).replace(/\n/g, "<br/>")}</p>`,
       });
     }
 
@@ -62,7 +69,7 @@ router.post("/", async (req, res) => {
 
 // Admin: list with search / filter / sort
 router.get("/", requireAuth, (req, res) => {
-  const { q, status, sort = "-createdAt" } = req.query;
+  const { q, status, source, sort = "-createdAt" } = req.query;
   let list = leads.all();
 
   if (q) {
@@ -74,12 +81,15 @@ router.get("/", requireAuth, (req, res) => {
   if (status) {
     list = list.filter((l) => l.status === status);
   }
+  if (source) {
+    list = list.filter((l) => (l.source || "Contact Form") === source);
+  }
 
   const dir = sort.startsWith("-") ? -1 : 1;
   const key = sort.replace(/^-/, "");
   list = [...list].sort((a, b) => (a[key] > b[key] ? dir : a[key] < b[key] ? -dir : 0));
 
-  res.json({ items: list, statuses: STATUSES, total: list.length });
+  res.json({ items: list, statuses: STATUSES, sources: SOURCES, total: list.length });
 });
 
 router.put("/:id", requireAuth, (req, res) => {

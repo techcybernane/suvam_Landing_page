@@ -29,14 +29,14 @@ export default function AdminLogin() {
     <div className="flex min-h-screen items-center justify-center bg-forest px-6">
       <div className="w-full max-w-sm">
         <div className="mb-8 flex flex-col items-center gap-3 text-center">
-          <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-lime text-forest">
+          <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-lime text-white">
             <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none">
               <path d="M6 7l6 11 6-11" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </span>
           <div>
             <h1 className="text-xl font-extrabold text-white">Admin Console</h1>
-            <p className="text-sm text-white/50">Sign in to manage the Vertexa website</p>
+            <p className="text-sm text-white/50">Sign in to manage the CybernaNet website</p>
           </div>
         </div>
 

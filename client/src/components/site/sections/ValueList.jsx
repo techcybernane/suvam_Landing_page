@@ -12,18 +12,18 @@ export default function ValueList({ data, tone }) {
         aria-hidden
       />
       <div className="container-page relative">
-        <Reveal variant="scale" className="mx-auto max-w-2xl text-center">
+        <Reveal variant="clip" className="mx-auto max-w-3xl text-center">
           {data.heading && (
-            <h2 className="text-3xl font-extrabold tracking-tight text-ink sm:text-4xl">{data.heading}</h2>
+            <h2 className="text-4xl font-extrabold leading-[1.08] tracking-[-0.02em] text-ink sm:text-5xl">{data.heading}</h2>
           )}
-          {data.subheading && <p className="mt-3 text-sm text-ink-soft">{data.subheading}</p>}
+          {data.subheading && <p className="mt-4 text-base text-ink-soft">{data.subheading}</p>}
         </Reveal>
 
-        <div className="mx-auto mt-10 flex max-w-4xl flex-wrap justify-center gap-3">
+        <div className="mx-auto mt-12 flex max-w-4xl flex-wrap justify-center gap-3">
           {data.items?.map((item, i) => (
             <Reveal key={i} delay={i * 45} variant={i % 2 === 0 ? "left" : "right"}>
-              <span className="inline-flex items-center gap-2 rounded-pill border border-line bg-white px-4 py-2.5 text-sm font-semibold text-ink shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-lime-dark hover:bg-forest hover:text-white">
-                <Check className="h-4 w-4 text-lime-dark" />
+              <span className="group inline-flex items-center gap-2 rounded-pill border border-line bg-white px-5 py-2.5 text-sm font-semibold text-ink shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:border-lime hover:bg-forest hover:text-white">
+                <Check className="h-4 w-4 text-lime-dark group-hover:text-lime-glow" />
                 {item}
               </span>
             </Reveal>
