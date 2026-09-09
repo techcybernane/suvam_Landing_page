@@ -9,7 +9,10 @@ piece of content, leads, and email settings without touching code.
 - `server/` — Express REST API. Auth (JWT in an httpOnly cookie), content storage
   (JSON files under `server/data/`, created automatically), media uploads
   (`server/uploads/`), lead capture + email notifications (Nodemailer).
-- `client/` — React (Vite) app. Public landing page at `/`, admin console at `/admin`.
+- `web/` — **the app**. Next.js (App Router). Bilingual public site at `/` (English)
+  and `/fr` (French), admin console at `/admin`.
+- `client/` — the original React + Vite app. **Superseded by `web/` and no longer
+  maintained**; kept only for reference.
 
 ## Getting started
 
@@ -17,7 +20,7 @@ piece of content, leads, and email settings without touching code.
 
 ```bash
 cd server && npm install
-cd ../client && npm install
+cd ../web && npm install
 ```
 
 **2. Configure the server**
@@ -32,14 +35,32 @@ default the admin account is `admin@vertexa.io` / `ChangeMe123!` — **change th
 before deploying anywhere public. If you leave the `SMTP_*` variables blank, emails are
 printed to the server console instead of sent — handy for local testing.
 
-**3. Run both apps** (two terminals)
+**3. Run both apps** (two terminals, from the repo root)
 
 ```bash
+# terminal 1 — API
 cd server && npm run dev     # http://localhost:4000
-cd client && npm run dev     # http://localhost:5173
+
+# terminal 2 — site + admin
+cd web && npm run dev        # http://localhost:3000
 ```
 
-Visit `http://localhost:5173` for the site, `http://localhost:5173/admin/login` to sign in.
+Then open:
+
+| | |
+| --- | --- |
+| English site | http://localhost:3000 |
+| French site | http://localhost:3000/fr |
+| Admin console | http://localhost:3000/admin/login |
+
+The site needs the API running — `web/next.config.js` proxies `/api` and `/uploads`
+to port 4000.
+
+To run the production build locally instead (what Vercel serves):
+
+```bash
+cd web && npm run build && npm start
+```
 
 ## What the admin can do (no code required)
 
