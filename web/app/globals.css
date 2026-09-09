@@ -55,20 +55,6 @@ p {
   text-wrap: pretty;
 }
 
-/* The admin dashboard is a light surface and opts out of the dark body defaults. */
-.admin-surface {
-  @apply bg-cream text-ink;
-  font-family: var(--font-sans), Manrope, system-ui, sans-serif;
-}
-.admin-surface h1,
-.admin-surface h2,
-.admin-surface h3,
-.admin-surface h4 {
-  font-family: var(--font-sans), Manrope, system-ui, sans-serif;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-}
-
 ::selection {
   background: #4da3ff;
   color: #04070f;
@@ -282,6 +268,25 @@ p {
   }
 
   /* --- admin (light) --- */
+
+  /*
+   * The admin dashboard is a light surface and opts out of the dark body
+   * defaults. It MUST live in this layer: declared after @tailwind utilities it
+   * would outrank a utility class on the same element at equal specificity,
+   * which is what once turned the dark login screen cream and left its white
+   * text invisible.
+   */
+  .admin-surface {
+    @apply bg-cream text-ink;
+    font-family: var(--font-sans), Manrope, system-ui, sans-serif;
+  }
+
+  .admin-surface :is(h1, h2, h3, h4) {
+    font-family: var(--font-sans), Manrope, system-ui, sans-serif;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+
   .admin-input {
     @apply w-full rounded-lg border border-line bg-white px-3 py-2 text-sm text-ink outline-none focus:border-forest focus:ring-1 focus:ring-forest;
   }
