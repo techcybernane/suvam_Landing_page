@@ -6,7 +6,7 @@ import { api } from "../../../lib/api.js";
 import Reveal from "../../ui/Reveal.jsx";
 import SectionHeading from "../../ui/SectionHeading.jsx";
 import LiveDot from "../../ui/LiveDot.jsx";
-import { useT } from "../../../hooks/useLocale.js";
+import { useLocale, useT } from "../../../hooks/useLocale.js";
 
 const EMPTY = { name: "", email: "", phone: "", company: "", service: "", message: "" };
 
@@ -36,6 +36,7 @@ function ContactLine({ icon: Icon, href, children }) {
 
 export default function Contact({ data, num }) {
   const tr = useT();
+  const locale = useLocale();
   const [form, setForm] = useState(EMPTY);
   const [status, setStatus] = useState("idle"); // idle | submitting | success | error
   const [error, setError] = useState("");
@@ -49,7 +50,7 @@ export default function Contact({ data, num }) {
     setStatus("submitting");
     setError("");
     try {
-      await api.post("/leads", form);
+      await api.post("/leads", { ...form, locale });
       setStatus("success");
       setForm(EMPTY);
     } catch (err) {

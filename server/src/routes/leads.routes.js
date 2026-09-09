@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { randomUUID } from "crypto";
-import { leads, getSettings } from "../data/collections.js";
+import { leads, getSettings, getAutoResponse } from "../data/collections.js";
 import { requireAuth } from "../middleware/auth.js";
 import { sendEmail } from "../utils/sendEmail.js";
+import { normalizeLocale, LOCALE_LABELS } from "../i18n.js";
 
 const router = Router();
 
@@ -18,7 +19,7 @@ function renderTemplate(str, vars) {
 
 // Public: contact form submission
 router.post("/", async (req, res) => {
-  const { name, email, phone, company, service, message, source } = req.body || {};
+  const { name, email, phone, company, service, message, source, locale } = req.body || {};
   // The popup form is deliberately short, so a message is optional there; the
   // contact form still requires one client-side.
   if (!name || !email) {
@@ -26,8 +27,12 @@ router.post("/", async (req, res) => {
   }
 
   const leadSource = SOURCES.includes(source) ? source : "Contact Form";
+  // Which language the visitor was reading, so the team knows how to reply and
+  // the auto-response goes out in the right language.
+  const leadLocale = normalizeLocale(locale);
   const lead = leads.create({
     id: randomUUID(),
+    locale: leadLocale,
     name,
     email,
     phone: phone || "",
@@ -45,13 +50,13 @@ router.post("/", async (req, res) => {
     if (settings.leadRecipients?.length) {
       await sendEmail({
         to: settings.leadRecipients,
-        subject: `New website lead (${leadSource}): ${name}`,
-        text: `New ${leadSource} submission\n\nName: ${name}\nEmail: ${email}\nPhone: ${phone || "—"}\nOrganization: ${company || "—"}\nService Required: ${service || "—"}\n\nMessage:\n${message}`,
-        html: `<h2>New website lead — ${leadSource}</h2><p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Phone:</strong> ${phone || "—"}</p><p><strong>Organization:</strong> ${company || "—"}</p><p><strong>Service Required:</strong> ${service || "—"}</p><p><strong>Message:</strong><br/>${String(message).replace(/\n/g, "<br/>")}</p>`,
+        subject: `New website lead (${leadSource}, ${LOCALE_LABELS[leadLocale]}): ${name}`,
+        text: `New ${leadSource} submission\n\nLanguage: ${LOCALE_LABELS[leadLocale]}\nName: ${name}\nEmail: ${email}\nPhone: ${phone || "—"}\nOrganization: ${company || "—"}\nService Required: ${service || "—"}\n\nMessage:\n${message}`,
+        html: `<h2>New website lead — ${leadSource}</h2><p><strong>Language:</strong> ${LOCALE_LABELS[leadLocale]}</p><p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Phone:</strong> ${phone || "—"}</p><p><strong>Organization:</strong> ${company || "—"}</p><p><strong>Service Required:</strong> ${service || "—"}</p><p><strong>Message:</strong><br/>${String(message).replace(/\n/g, "<br/>")}</p>`,
       });
     }
 
-    const ar = settings.autoResponse || {};
+    const ar = getAutoResponse(leadLocale);
     const greeting = renderTemplate(ar.greeting, { name });
     const bodyHtml = String(ar.body || "").replace(/\n/g, "<br/>");
     await sendEmail({

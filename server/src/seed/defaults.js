@@ -1331,14 +1331,27 @@ export const defaultFaqs = [...withDefaults(EN_FAQS, "en"), ...withDefaults(FR_F
 
 export const defaultSettings = {
   leadRecipients: ["CybernaNet@gmail.com"],
+  // Keyed by locale: a visitor who submitted the French site gets the French
+  // reply. Falls back to the default locale if a language has no template.
   autoResponse: {
-    subject: "Thanks for reaching out to CybernaNet",
-    greeting: "Hi {{name}},",
-    body:
-      "Thanks for getting in touch with CybernaNet! We've received your message and a member of our team will reply shortly to help identify the right starting point for your project.\n\nIn the meantime, feel free to reply directly to this email with any extra details.",
-    ctaLabel: "Visit our site",
-    ctaUrl: "https://example.com",
-    footer: "— The CybernaNet Team",
+    en: {
+      subject: "Thanks for reaching out to CybernaNet",
+      greeting: "Hi {{name}},",
+      body:
+        "Thanks for getting in touch with CybernaNet! We've received your message and a member of our team will reply shortly to help identify the right starting point for your project.\n\nIn the meantime, feel free to reply directly to this email with any extra details.",
+      ctaLabel: "Visit our site",
+      ctaUrl: "https://example.com",
+      footer: "— The CybernaNet Team",
+    },
+    fr: {
+      subject: "Merci d'avoir contacté CybernaNet",
+      greeting: "Bonjour {{name}},",
+      body:
+        "Merci d'avoir contacté CybernaNet ! Nous avons bien reçu votre message et un membre de notre équipe vous répondra rapidement pour identifier le bon point de départ pour votre projet.\n\nEn attendant, n'hésitez pas à répondre directement à cet e-mail pour nous donner plus de détails.",
+      ctaLabel: "Visiter notre site",
+      ctaUrl: "https://example.com",
+      footer: "— L'équipe CybernaNet",
+    },
   },
   smtp: {
     host: "",

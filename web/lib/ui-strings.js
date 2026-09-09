@@ -20,6 +20,7 @@ const STRINGS = {
 
     // carousels
     featured: "Featured",
+    showSlide: "Show slide",
     previousSlide: "Previous slide",
     nextSlide: "Next slide",
     pauseCarousel: "Pause carousel",
@@ -47,7 +48,11 @@ const STRINGS = {
     requestSentBody: "Thanks for reaching out — we'll get back to you within one business day.",
     sendAnother: "Send another request",
     noFaqs: "No FAQs yet.",
-    alwaysOn: "Always on",
+
+    // 404
+    notFoundTitle: "Page not found",
+    notFoundBody: "The page you're looking for doesn't exist.",
+    notFoundCta: "Back to home",
   },
 
   fr: {
@@ -60,6 +65,7 @@ const STRINGS = {
     switchLanguage: "Changer de langue",
 
     featured: "À la une",
+    showSlide: "Afficher la diapositive",
     previousSlide: "Diapositive précédente",
     nextSlide: "Diapositive suivante",
     pauseCarousel: "Mettre en pause",
@@ -86,7 +92,10 @@ const STRINGS = {
     requestSentBody: "Merci de nous avoir contactés — nous revenons vers vous sous un jour ouvré.",
     sendAnother: "Envoyer une autre demande",
     noFaqs: "Aucune question pour le moment.",
-    alwaysOn: "Toujours actif",
+
+    notFoundTitle: "Page introuvable",
+    notFoundBody: "La page que vous cherchez n'existe pas.",
+    notFoundCta: "Retour à l'accueil",
   },
 };
 

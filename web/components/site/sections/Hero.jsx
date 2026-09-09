@@ -167,7 +167,7 @@ export default function Hero({ data }) {
                   <button
                     key={slide.id || i}
                     onClick={() => go(i)}
-                    aria-label={`${t("nextSlide")} ${i + 1}: ${slide.headingLine1 || ""}`}
+                    aria-label={`${t("showSlide")} ${i + 1}: ${slide.headingLine1 || ""}`}
                     aria-current={i === active}
                     className="group flex max-w-[200px] flex-col gap-2 pr-4 text-left"
                   >

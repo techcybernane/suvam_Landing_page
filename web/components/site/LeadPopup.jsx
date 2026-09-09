@@ -6,7 +6,7 @@ import { stripLocale } from "../../lib/i18n.js";
 import { X, ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { api } from "../../lib/api.js";
 import LiveDot from "../ui/LiveDot.jsx";
-import { useT } from "../../hooks/useLocale.js";
+import { useLocale, useT } from "../../hooks/useLocale.js";
 
 const STORAGE_KEY = "cybernanet:lead-popup";
 const EMPTY = { name: "", email: "", phone: "", service: "", message: "" };
@@ -47,6 +47,7 @@ function suppressFor(days) {
  */
 export default function LeadPopup({ config }) {
   const tr = useT();
+  const locale = useLocale();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(EMPTY);
@@ -116,7 +117,7 @@ export default function LeadPopup({ config }) {
     setStatus("submitting");
     setError("");
     try {
-      await api.post("/leads", { ...form, source: "Popup Form" });
+      await api.post("/leads", { ...form, source: "Popup Form", locale });
       setStatus("success");
       setForm(EMPTY);
       // A submitted visitor shouldn't see this again for a good while.

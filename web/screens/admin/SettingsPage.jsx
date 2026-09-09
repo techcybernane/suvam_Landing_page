@@ -3,26 +3,31 @@
 import { useEffect, useState } from "react";
 import { Save, Check, AlertTriangle } from "lucide-react";
 import { api } from "../../lib/api.js";
+import LocalePicker from "../../components/admin/LocalePicker.jsx";
+import { DEFAULT_LOCALE } from "../../lib/i18n.js";
 import { TextField, TextAreaField, StringListField } from "../../components/admin/fields/Fields.jsx";
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState(null);
+  const [locale, setLocale] = useState(DEFAULT_LOCALE);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    api.get("/settings").then(({ data }) => setSettings(data));
-  }, []);
+    setSettings(null);
+    api.get("/settings", { params: { locale } }).then(({ data }) => setSettings(data));
+  }, [locale]);
 
   const save = async () => {
     setSaving(true);
     setError("");
     try {
-      const { data } = await api.put("/settings", {
-        leadRecipients: settings.leadRecipients,
-        autoResponse: settings.autoResponse,
-      });
+      const { data } = await api.put(
+        "/settings",
+        { leadRecipients: settings.leadRecipients, autoResponse: settings.autoResponse },
+        { params: { locale } }
+      );
       setSettings(data);
       setSaved(true);
       setTimeout(() => setSaved(false), 1800);
@@ -77,7 +82,14 @@ export default function SettingsPage() {
 
       <div className="mt-6 admin-card space-y-4">
         <div>
+          <div className="flex flex-wrap items-center justify-between gap-4">
           <h2 className="font-bold text-ink">Customer auto-response email</h2>
+          <LocalePicker value={locale} onChange={setLocale} />
+        </div>
+        <p className="text-xs text-ink-soft">
+          Sent in the language the visitor was browsing when they submitted the form. Each language
+          has its own template.
+        </p>
           <p className="mt-1 text-sm text-ink-soft">
             Sent automatically to whoever fills out the contact form. Use{" "}
             <code className="rounded bg-cream px-1.5 py-0.5 text-xs">{"{{name}}"}</code> to insert their name.
