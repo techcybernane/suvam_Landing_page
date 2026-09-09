@@ -2,9 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
+import { stripLocale } from "../../lib/i18n.js";
 import { X, ArrowUpRight, CheckCircle2 } from "lucide-react";
 import { api } from "../../lib/api.js";
 import LiveDot from "../ui/LiveDot.jsx";
+import { useT } from "../../hooks/useLocale.js";
 
 const STORAGE_KEY = "cybernanet:lead-popup";
 const EMPTY = { name: "", email: "", phone: "", service: "", message: "" };
@@ -44,6 +46,7 @@ function suppressFor(days) {
  * Admin → Site & SEO.
  */
 export default function LeadPopup({ config }) {
+  const tr = useT();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(EMPTY);
@@ -53,7 +56,7 @@ export default function LeadPopup({ config }) {
   const openedRef = useRef(false);
 
   const enabled =
-    !!config?.enabled && !(config.hideOnPaths || []).some((p) => p && pathname === p);
+    !!config?.enabled && !(config.hideOnPaths || []).some((p) => p && stripLocale(pathname) === p);
   const repeatDays = Number(config?.repeatAfterDays ?? 7);
 
   const show = useCallback(() => {
@@ -129,7 +132,7 @@ export default function LeadPopup({ config }) {
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6">
       <button
-        aria-label="Close"
+        aria-label={tr("close")}
         onClick={close}
         className="absolute inset-0 h-full w-full cursor-default bg-void/80 backdrop-blur-sm"
         style={{ animation: "popup-fade 320ms cubic-bezier(0.16,1,0.3,1) both" }}
@@ -145,7 +148,7 @@ export default function LeadPopup({ config }) {
       >
         <button
           onClick={close}
-          aria-label="Close"
+          aria-label={tr("close")}
           className="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-void/60 text-bone/70 backdrop-blur-sm transition-colors duration-300 hover:bg-void hover:text-bone"
         >
           <X className="h-4 w-4" />
@@ -179,10 +182,10 @@ export default function LeadPopup({ config }) {
           {status === "success" ? (
             <div className="flex h-full min-h-[19rem] flex-col items-center justify-center gap-4 text-center">
               <CheckCircle2 className="h-11 w-11 text-signal" />
-              <h3 className="text-fluid-lg font-semibold text-bone">{config.successHeading || "Request received"}</h3>
+              <h3 className="text-fluid-lg font-semibold text-bone">{config.successHeading || tr("requestSent")}</h3>
               <p className="max-w-xs text-fluid-sm text-bone/55">{config.successBody}</p>
               <button onClick={close} className="btn-outline mt-2">
-                Close
+                {tr("close")}
               </button>
             </div>
           ) : (
@@ -223,23 +226,23 @@ export default function LeadPopup({ config }) {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label className={LABEL} htmlFor="popup-name">Full name</label>
-                  <input id="popup-name" name="name" required value={form.name} onChange={onChange} className={FIELD} placeholder="Jane Doe" />
+                  <label className={LABEL} htmlFor="popup-name">{tr("fullName")}</label>
+                  <input id="popup-name" name="name" required value={form.name} onChange={onChange} className={FIELD} placeholder={tr("namePlaceholder")} />
                 </div>
                 <div>
-                  <label className={LABEL} htmlFor="popup-phone">Phone</label>
-                  <input id="popup-phone" name="phone" value={form.phone} onChange={onChange} className={FIELD} placeholder="+235 00 00 00 00" />
+                  <label className={LABEL} htmlFor="popup-phone">{tr("phone")}</label>
+                  <input id="popup-phone" name="phone" value={form.phone} onChange={onChange} className={FIELD} placeholder={tr("phonePlaceholder")} />
                 </div>
               </div>
 
               <div>
-                <label className={LABEL} htmlFor="popup-email">Email</label>
-                <input id="popup-email" type="email" name="email" required value={form.email} onChange={onChange} className={FIELD} placeholder="jane@company.com" />
+                <label className={LABEL} htmlFor="popup-email">{tr("email")}</label>
+                <input id="popup-email" type="email" name="email" required value={form.email} onChange={onChange} className={FIELD} placeholder={tr("emailPlaceholder")} />
               </div>
 
               <div>
-                <label className={LABEL} htmlFor="popup-message">Anything we should know? (optional)</label>
-                <textarea id="popup-message" name="message" rows={2} value={form.message} onChange={onChange} className={`${FIELD} resize-none`} placeholder="A line about your environment or goal" />
+                <label className={LABEL} htmlFor="popup-message">{tr("popupMessageLabel")}</label>
+                <textarea id="popup-message" name="message" rows={2} value={form.message} onChange={onChange} className={`${FIELD} resize-none`} placeholder={tr("popupMessagePlaceholder")} />
               </div>
 
               {status === "error" && (
@@ -247,7 +250,7 @@ export default function LeadPopup({ config }) {
               )}
 
               <button type="submit" disabled={status === "submitting"} className="btn-primary w-full disabled:opacity-60">
-                {status === "submitting" ? "Sending…" : config.submitLabel || "Request a Callback"}
+                {status === "submitting" ? tr("sending") : config.submitLabel || tr("sendRequest")}
                 {status !== "submitting" && <ArrowUpRight className="h-4 w-4" />}
               </button>
 

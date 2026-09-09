@@ -6,13 +6,14 @@ import Reveal from "../../ui/Reveal.jsx";
 import SectionHeading from "../../ui/SectionHeading.jsx";
 import SmartLink from "../../ui/SmartLink.jsx";
 import { toneOf } from "../../../lib/tone.js";
+import { useT } from "../../../hooks/useLocale.js";
 
 const ICONS = [
   ShieldCheck, Network, Cloud, Code2, Wrench, Compass, Database,
   GraduationCap, Building2, Landmark, Rocket,
 ];
 
-function Card({ card, index, total, t }) {
+function Card({ card, index, total, t, tr }) {
   const Icon = ICONS[index % ICONS.length];
   const Wrapper = card.href ? SmartLink : "div";
 
@@ -50,7 +51,7 @@ function Card({ card, index, total, t }) {
         )}
         {card.href && (
           <span className={`relative mt-7 inline-flex items-center gap-1.5 font-mono text-[0.66rem] uppercase tracking-[0.18em] ${t.accent}`}>
-            Explore
+            {tr("explore")}
             <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 ease-editorial group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </span>
         )}
@@ -60,6 +61,7 @@ function Card({ card, index, total, t }) {
 }
 
 export default function IconGrid({ data, tone, num }) {
+  const tr = useT();
   if (!data) return null;
   const t = toneOf(tone);
   const count = data.cards?.length ?? 0;
@@ -87,7 +89,7 @@ export default function IconGrid({ data, tone, num }) {
 
         <div className={`${data.heading || data.intro || data.tag ? "mt-16" : ""} grid grid-cols-1 gap-5 ${gridCols}`}>
           {data.cards?.map((card, i) => (
-            <Card key={card.id || i} card={card} index={i} total={count} t={t} />
+            <Card key={card.id || i} card={card} index={i} total={count} t={t} tr={tr} />
           ))}
         </div>
 

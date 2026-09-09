@@ -4,8 +4,11 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { Menu, X, ArrowUpRight, ChevronDown } from "lucide-react";
 import SmartLink from "../ui/SmartLink.jsx";
+import LocaleSwitch from "../ui/LocaleSwitch.jsx";
+import { useT } from "../../hooks/useLocale.js";
 
 export default function Header({ brand, nav }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
@@ -96,6 +99,7 @@ export default function Header({ brand, nav }) {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
+          <LocaleSwitch />
           {nav.ctaPrimary?.label && (
             <SmartLink href={nav.ctaPrimary.href} className="btn-primary !px-6 !py-3">
               {nav.ctaPrimary.label}
@@ -104,14 +108,17 @@ export default function Header({ brand, nav }) {
           )}
         </div>
 
-        <button
-          className="rounded-lg p-2 text-bone lg:hidden"
+        <div className="flex items-center gap-2 lg:hidden">
+          <LocaleSwitch />
+          <button
+          className="rounded-lg p-2 text-bone"
           onClick={() => setOpen((o) => !o)}
-          aria-label={open ? "Close menu" : "Open menu"}
+          aria-label={open ? t("closeMenu") : t("openMenu")}
           aria-expanded={open}
         >
           {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+          </button>
+        </div>
       </div>
 
       {open && (

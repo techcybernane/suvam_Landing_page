@@ -5,9 +5,12 @@ import { Save, Check, Plus, Trash2 } from "lucide-react";
 import { api } from "../../lib/api.js";
 import { TextField, TextAreaField, RepeaterField, ImageField, ToggleField, StringListField } from "../../components/admin/fields/Fields.jsx";
 import { randomId } from "../../lib/randomId.js";
+import LocalePicker from "../../components/admin/LocalePicker.jsx";
+import { DEFAULT_LOCALE } from "../../lib/i18n.js";
 
 export default function SiteSettingsPage() {
   const [meta, setMeta] = useState(null);
+  const [locale, setLocale] = useState(DEFAULT_LOCALE);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
@@ -19,24 +22,28 @@ export default function SiteSettingsPage() {
   const [seoSaved, setSeoSaved] = useState(false);
 
   useEffect(() => {
-    api.get("/content/meta").then(({ data }) => setMeta(data));
     api.get("/content/pages").then(({ data }) => {
       setPages(data);
-      if (data.length) setSeoSlug(data[0].slug);
+      if (data.length) setSeoSlug((cur) => cur ?? data[0].slug);
     });
   }, []);
 
   useEffect(() => {
+    setMeta(null);
+    api.get("/content/meta", { params: { locale } }).then(({ data }) => setMeta(data));
+  }, [locale]);
+
+  useEffect(() => {
     if (!seoSlug) return;
     setSeo(null);
-    api.get(`/content/pages/${seoSlug}`).then(({ data }) => setSeo(data.seo));
-  }, [seoSlug]);
+    api.get(`/content/pages/${seoSlug}`, { params: { locale } }).then(({ data }) => setSeo(data.seo));
+  }, [seoSlug, locale]);
 
   const save = async () => {
     setSaving(true);
     setError("");
     try {
-      const { data } = await api.put("/content/meta", meta);
+      const { data } = await api.put("/content/meta", meta, { params: { locale } });
       setMeta(data);
       setSaved(true);
       setTimeout(() => setSaved(false), 1800);
@@ -51,7 +58,7 @@ export default function SiteSettingsPage() {
     setSeoSaving(true);
     setError("");
     try {
-      const { data } = await api.put(`/content/pages/${seoSlug}/seo`, seo);
+      const { data } = await api.put(`/content/pages/${seoSlug}/seo`, seo, { params: { locale } });
       setSeo(data.seo);
       setSeoSaved(true);
       setTimeout(() => setSeoSaved(false), 1800);
@@ -85,7 +92,14 @@ export default function SiteSettingsPage() {
   return (
     <div>
       <h1 className="text-2xl font-extrabold text-ink">Site, Navigation &amp; SEO</h1>
-      <p className="mt-1 text-sm text-ink-soft">Brand, navigation, footer, and per-page search-engine metadata.</p>
+      <p className="mt-1 text-sm text-ink-soft">
+        Brand, navigation, footer, popup and per-page search-engine metadata. Each language holds
+        its own copy — switch below to edit the other one.
+      </p>
+
+      <div className="mt-5">
+        <LocalePicker value={locale} onChange={setLocale} />
+      </div>
 
       {error && <p className="mt-4 rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-600">{error}</p>}
 

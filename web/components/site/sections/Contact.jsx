@@ -6,6 +6,7 @@ import { api } from "../../../lib/api.js";
 import Reveal from "../../ui/Reveal.jsx";
 import SectionHeading from "../../ui/SectionHeading.jsx";
 import LiveDot from "../../ui/LiveDot.jsx";
+import { useT } from "../../../hooks/useLocale.js";
 
 const EMPTY = { name: "", email: "", phone: "", company: "", service: "", message: "" };
 
@@ -34,6 +35,7 @@ function ContactLine({ icon: Icon, href, children }) {
 }
 
 export default function Contact({ data, num }) {
+  const tr = useT();
   const [form, setForm] = useState(EMPTY);
   const [status, setStatus] = useState("idle"); // idle | submitting | success | error
   const [error, setError] = useState("");
@@ -99,12 +101,12 @@ export default function Contact({ data, num }) {
             {status === "success" ? (
               <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
                 <CheckCircle2 className="h-12 w-12 text-signal" />
-                <h3 className="text-fluid-xl font-semibold text-bone">Request sent</h3>
+                <h3 className="text-fluid-xl font-semibold text-bone">{tr("requestSent")}</h3>
                 <p className="max-w-xs text-fluid-sm text-bone/55">
-                  Thanks for reaching out — we&apos;ll get back to you within one business day.
+                  {tr("requestSentBody")}
                 </p>
                 <button className="btn-outline mt-2" onClick={() => setStatus("idle")}>
-                  Send another request
+                  {tr("sendAnother")}
                 </button>
               </div>
             ) : (
@@ -145,25 +147,25 @@ export default function Contact({ data, num }) {
 
                 <div className="grid gap-5 sm:grid-cols-2">
                   <div>
-                    <label className={LABEL} htmlFor="name">Full name</label>
-                    <input id="name" name="name" required value={form.name} onChange={onChange} className={FIELD} placeholder="Jane Doe" />
+                    <label className={LABEL} htmlFor="name">{tr("fullName")}</label>
+                    <input id="name" name="name" required value={form.name} onChange={onChange} className={FIELD} placeholder={tr("namePlaceholder")} />
                   </div>
                   <div>
-                    <label className={LABEL} htmlFor="company">Organization</label>
-                    <input id="company" name="company" value={form.company} onChange={onChange} className={FIELD} placeholder="Your organization" />
+                    <label className={LABEL} htmlFor="company">{tr("organization")}</label>
+                    <input id="company" name="company" value={form.company} onChange={onChange} className={FIELD} placeholder={tr("organizationPlaceholder")} />
                   </div>
                   <div>
-                    <label className={LABEL} htmlFor="email">Email</label>
-                    <input id="email" type="email" name="email" required value={form.email} onChange={onChange} className={FIELD} placeholder="jane@company.com" />
+                    <label className={LABEL} htmlFor="email">{tr("email")}</label>
+                    <input id="email" type="email" name="email" required value={form.email} onChange={onChange} className={FIELD} placeholder={tr("emailPlaceholder")} />
                   </div>
                   <div>
-                    <label className={LABEL} htmlFor="phone">Phone</label>
-                    <input id="phone" name="phone" value={form.phone} onChange={onChange} className={FIELD} placeholder="+235 00 00 00 00" />
+                    <label className={LABEL} htmlFor="phone">{tr("phone")}</label>
+                    <input id="phone" name="phone" value={form.phone} onChange={onChange} className={FIELD} placeholder={tr("phonePlaceholder")} />
                   </div>
                 </div>
 
                 <div>
-                  <label className={LABEL} htmlFor="message">Tell us about your project or challenge</label>
+                  <label className={LABEL} htmlFor="message">{tr("messageLabel")}</label>
                   <textarea
                     id="message"
                     name="message"
@@ -172,7 +174,7 @@ export default function Contact({ data, num }) {
                     value={form.message}
                     onChange={onChange}
                     className={`${FIELD} resize-none`}
-                    placeholder="What are you trying to build, secure or modernize?"
+                    placeholder={tr("messagePlaceholder")}
                   />
                 </div>
 
@@ -181,7 +183,7 @@ export default function Contact({ data, num }) {
                 )}
 
                 <button type="submit" disabled={status === "submitting"} className="btn-primary w-full disabled:opacity-60">
-                  {status === "submitting" ? "Sending…" : data.submitLabel || "Send Request"}
+                  {status === "submitting" ? tr("sending") : data.submitLabel || tr("sendRequest")}
                   {status !== "submitting" && <ArrowUpRight className="h-4 w-4" />}
                 </button>
 

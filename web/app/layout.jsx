@@ -1,4 +1,6 @@
+import { headers } from "next/headers";
 import "./globals.css";
+import { normalizeLocale } from "../lib/i18n.js";
 
 export const metadata = {
   title: "CybernaNet — Innovate. Secure. Transform.",
@@ -7,9 +9,12 @@ export const metadata = {
   icons: { icon: "/favicon.svg" },
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  // Set by middleware; the admin app has no locale prefix and falls back.
+  const locale = normalizeLocale((await headers()).get("x-locale"));
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />

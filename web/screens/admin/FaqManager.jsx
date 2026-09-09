@@ -3,21 +3,34 @@
 import { useEffect, useState } from "react";
 import { Plus, Trash2, ChevronUp, ChevronDown, Save } from "lucide-react";
 import { api } from "../../lib/api.js";
+import LocalePicker from "../../components/admin/LocalePicker.jsx";
+import { DEFAULT_LOCALE } from "../../lib/i18n.js";
 import { TextField, TextAreaField, ToggleField } from "../../components/admin/fields/Fields.jsx";
 
 export default function FaqManager() {
   const [faqs, setFaqs] = useState(null);
+  const [locale, setLocale] = useState(DEFAULT_LOCALE);
   const [error, setError] = useState("");
 
-  const load = () => api.get("/faqs/all").then(({ data }) => setFaqs(data.sort((a, b) => a.order - b.order)));
+  const load = () =>
+    api
+      .get("/faqs/all", { params: { locale } })
+      .then(({ data }) => setFaqs(data.sort((a, b) => a.order - b.order)));
 
+  // Each language keeps its own FAQ list, so switching reloads rather than filters.
   useEffect(() => {
+    setFaqs(null);
     load();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locale]);
 
   const addFaq = async () => {
     try {
-      const { data } = await api.post("/faqs", { question: "New question", answer: "New answer", category: "General" });
+      const { data } = await api.post(
+        "/faqs",
+        { question: "New question", answer: "New answer", category: "General" },
+        { params: { locale } }
+      );
       setFaqs((prev) => [...prev, data]);
     } catch (err) {
       setError(err.message);
@@ -48,7 +61,7 @@ export default function FaqManager() {
     const next = [...faqs];
     [next[index], next[j]] = [next[j], next[index]];
     setFaqs(next);
-    await api.put("/faqs/reorder/all", { order: next.map((f) => f.id) });
+    await api.put("/faqs/reorder/all", { order: next.map((f) => f.id) }, { params: { locale } });
   };
 
   if (!faqs) {
@@ -60,7 +73,12 @@ export default function FaqManager() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-extrabold text-ink">FAQs</h1>
-          <p className="mt-1 text-sm text-ink-soft">Manage the questions shown in the FAQ section.</p>
+          <p className="mt-1 text-sm text-ink-soft">
+            Manage the questions shown in the FAQ section. Each language has its own list.
+          </p>
+          <div className="mt-4">
+            <LocalePicker value={locale} onChange={setLocale} />
+          </div>
         </div>
         <button onClick={addFaq} className="btn-primary">
           <Plus className="h-4 w-4" /> Add FAQ

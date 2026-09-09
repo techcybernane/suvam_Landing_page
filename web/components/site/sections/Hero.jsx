@@ -7,6 +7,7 @@ import RevealWords from "../../ui/RevealWords.jsx";
 import CountUp from "../../ui/CountUp.jsx";
 import LiveDot from "../../ui/LiveDot.jsx";
 import SmartLink from "../../ui/SmartLink.jsx";
+import { useT } from "../../../hooks/useLocale.js";
 
 const AUTOPLAY_MS = 7000;
 
@@ -29,6 +30,7 @@ function normalizeSlides(data) {
 }
 
 export default function Hero({ data }) {
+  const t = useT();
   const slides = normalizeSlides(data || {});
   const stats = data?.stats?.length ? data.stats : [];
   const count = slides.length;
@@ -74,7 +76,7 @@ export default function Hero({ data }) {
     <section
       id="hero"
       aria-roledescription="carousel"
-      aria-label="Featured"
+      aria-label={t("featured")}
       tabIndex={0}
       onKeyDown={onKeyDown}
       onMouseEnter={() => setHovered(true)}
@@ -165,7 +167,7 @@ export default function Hero({ data }) {
                   <button
                     key={slide.id || i}
                     onClick={() => go(i)}
-                    aria-label={`Show slide ${i + 1}: ${slide.headingLine1 || ""}`}
+                    aria-label={`${t("nextSlide")} ${i + 1}: ${slide.headingLine1 || ""}`}
                     aria-current={i === active}
                     className="group flex max-w-[200px] flex-col gap-2 pr-4 text-left"
                   >
@@ -206,21 +208,21 @@ export default function Hero({ data }) {
                 </span>
                 <button
                   onClick={() => setPlaying((p) => !p)}
-                  aria-label={playing ? "Pause carousel" : "Play carousel"}
+                  aria-label={playing ? t("pauseCarousel") : t("playCarousel")}
                   className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] text-bone backdrop-blur-sm transition-all duration-300 ease-editorial hover:border-signal/50 hover:bg-white/10"
                 >
                   {playing ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5 fill-current" />}
                 </button>
                 <button
                   onClick={() => go(active - 1)}
-                  aria-label="Previous slide"
+                  aria-label={t("previousSlide")}
                   className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] text-bone backdrop-blur-sm transition-all duration-300 ease-editorial hover:border-signal/50 hover:bg-white/10"
                 >
                   <ArrowLeft className="h-4 w-4" />
                 </button>
                 <button
                   onClick={() => go(active + 1)}
-                  aria-label="Next slide"
+                  aria-label={t("nextSlide")}
                   className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/[0.04] text-bone backdrop-blur-sm transition-all duration-300 ease-editorial hover:border-signal/50 hover:bg-white/10"
                 >
                   <ArrowRight className="h-4 w-4" />

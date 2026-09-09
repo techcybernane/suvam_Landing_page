@@ -4,14 +4,17 @@ import RevealWords from "../../ui/RevealWords.jsx";
 import SmartLink from "../../ui/SmartLink.jsx";
 import LiveDot from "../../ui/LiveDot.jsx";
 import { breadcrumbFor } from "../../../lib/breadcrumb.js";
+import { useLocale, useT } from "../../../hooks/useLocale.js";
 
 /**
  * Inner-page masthead. Always dark so every page opens on the same note as the
  * home hero, with an optional photographic backdrop under heavy scrims.
  */
 export default function PageHero({ data, pathname = "/" }) {
+  const locale = useLocale();
+  const t = useT();
   if (!data) return null;
-  const crumbs = breadcrumbFor(pathname);
+  const crumbs = breadcrumbFor(pathname, locale);
   const hasImage = !!data.image;
 
   return (
@@ -32,7 +35,7 @@ export default function PageHero({ data, pathname = "/" }) {
 
       <div className="container-page relative">
         <Reveal variant="fade" eager duration={700}>
-          <nav aria-label="Breadcrumb" className="mb-9 flex flex-wrap items-center justify-center gap-1.5 font-mono text-fluid-xs text-bone/45">
+          <nav aria-label={t("breadcrumb")} className="mb-9 flex flex-wrap items-center justify-center gap-1.5 font-mono text-fluid-xs text-bone/45">
             {crumbs.map((crumb, i) => (
               <span key={crumb.href} className="flex items-center gap-1.5">
                 {i > 0 && <ChevronRight className="h-3 w-3 text-bone/25" />}

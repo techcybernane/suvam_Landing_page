@@ -5,8 +5,10 @@ import { Plus } from "lucide-react";
 import Reveal from "../../ui/Reveal.jsx";
 import SectionHeading from "../../ui/SectionHeading.jsx";
 import { toneOf } from "../../../lib/tone.js";
+import { useT } from "../../../hooks/useLocale.js";
 
 export default function Faq({ data, faqs, tone, num }) {
+  const tr = useT();
   const [openId, setOpenId] = useState(faqs?.[0]?.id ?? null);
   if (!data) return null;
   const t = toneOf(tone);
@@ -59,7 +61,7 @@ export default function Faq({ data, faqs, tone, num }) {
               );
             })
           ) : (
-            <p className={`px-6 py-8 text-center text-fluid-sm ${t.muted}`}>No FAQs yet.</p>
+            <p className={`px-6 py-8 text-center text-fluid-sm ${t.muted}`}>{tr("noFaqs")}</p>
           )}
         </Reveal>
       </div>

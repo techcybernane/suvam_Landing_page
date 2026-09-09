@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import Reveal from "../../ui/Reveal.jsx";
 import SectionHeading from "../../ui/SectionHeading.jsx";
 import { toneOf } from "../../../lib/tone.js";
+import { useT } from "../../../hooks/useLocale.js";
 
 /**
  * Horizontal showcase built on native CSS scroll-snap — so it drags, flicks and
@@ -13,6 +14,7 @@ import { toneOf } from "../../../lib/tone.js";
  * The "03 / 10" counter tracks whichever card is nearest the snap point.
  */
 export default function ShowcaseCarousel({ data, tone, num }) {
+  const tr = useT();
   const items = data?.items || [];
   const trackRef = useRef(null);
   const [active, setActive] = useState(0);
@@ -129,7 +131,7 @@ export default function ShowcaseCarousel({ data, tone, num }) {
             <button
               onClick={() => { takeOver(); scrollTo(active - 1); }}
               disabled={edges.start}
-              aria-label="Previous item"
+              aria-label={tr("previousItem")}
               className={`flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-300 ease-editorial disabled:cursor-not-allowed disabled:opacity-30 ${t.border} ${
                 t.light ? "text-void hover:border-signal-deep/50 hover:bg-void/5" : "text-bone hover:border-signal/50 hover:bg-white/10"
               }`}
@@ -139,7 +141,7 @@ export default function ShowcaseCarousel({ data, tone, num }) {
             <button
               onClick={() => { takeOver(); scrollTo(active + 1); }}
               disabled={edges.end}
-              aria-label="Next item"
+              aria-label={tr("nextItem")}
               className={`flex h-11 w-11 items-center justify-center rounded-full border transition-all duration-300 ease-editorial disabled:cursor-not-allowed disabled:opacity-30 ${t.border} ${
                 t.light ? "text-void hover:border-signal-deep/50 hover:bg-void/5" : "text-bone hover:border-signal/50 hover:bg-white/10"
               }`}

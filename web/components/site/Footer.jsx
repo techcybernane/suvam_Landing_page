@@ -1,8 +1,10 @@
 import { ArrowUpRight, Mail, Phone, MapPin, ArrowUp } from "lucide-react";
 import SmartLink from "../ui/SmartLink.jsx";
 import Reveal from "../ui/Reveal.jsx";
+import LocaleSwitch from "../ui/LocaleSwitch.jsx";
+import { t } from "../../lib/ui-strings.js";
 
-export default function Footer({ brand, footer }) {
+export default function Footer({ brand, footer, locale }) {
   if (!footer) return null;
   const name = brand?.name || "CybernaNet";
 
@@ -28,7 +30,7 @@ export default function Footer({ brand, footer }) {
             <p className="mt-7 max-w-sm text-fluid-sm leading-relaxed text-bone/50">{footer.tagline}</p>
 
             <SmartLink href="/contact" className="btn-outline mt-8">
-              Start a Conversation
+              {t(locale, "startConversation")}
               <ArrowUpRight className="h-4 w-4" />
             </SmartLink>
           </Reveal>
@@ -57,14 +59,15 @@ export default function Footer({ brand, footer }) {
 
         <div className="mt-16 flex flex-col-reverse items-center justify-between gap-4 border-t border-white/[0.08] py-8 sm:flex-row">
           <p className="font-mono text-[0.62rem] uppercase tracking-[0.14em] text-bone/30">{footer.copyright}</p>
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center gap-6">
+            <LocaleSwitch />
             {footer.social?.map((s) => (
               <SmartLink key={s.id} href={s.href} className="text-fluid-xs font-medium text-bone/50 transition-colors hover:text-signal">
                 {s.label}
               </SmartLink>
             ))}
             <a href="#hero" className="group inline-flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-bone/40 transition-colors hover:text-signal">
-              Back to top
+              {t(locale, "backToTop")}
               <ArrowUp className="h-3.5 w-3.5 transition-transform duration-300 ease-editorial group-hover:-translate-y-0.5" />
             </a>
           </div>

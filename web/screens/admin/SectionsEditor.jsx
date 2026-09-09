@@ -5,6 +5,8 @@ import { ChevronDown, ChevronUp, GripVertical, Save, Check } from "lucide-react"
 import { api } from "../../lib/api.js";
 import { ToggleField, SelectField } from "../../components/admin/fields/Fields.jsx";
 import { SECTION_FORM_REGISTRY } from "../../components/admin/fields/SectionForms.jsx";
+import LocalePicker from "../../components/admin/LocalePicker.jsx";
+import { DEFAULT_LOCALE } from "../../lib/i18n.js";
 
 // Mirrors BANDED_TYPES in components/site/PageSections.jsx — only these
 // sections take part in the light/dark band rhythm, so only they get the
@@ -18,6 +20,7 @@ const BANDED = new Set([
 export default function SectionsEditor() {
   const [pages, setPages] = useState([]);
   const [slug, setSlug] = useState(null);
+  const [locale, setLocale] = useState(DEFAULT_LOCALE);
   const [sections, setSections] = useState(null);
   const [openId, setOpenId] = useState(null);
   const [savingId, setSavingId] = useState(null);
@@ -35,10 +38,10 @@ export default function SectionsEditor() {
     if (!slug) return;
     setSections(null);
     setOpenId(null);
-    api.get(`/content/pages/${slug}`).then(({ data }) => {
+    api.get(`/content/pages/${slug}`, { params: { locale } }).then(({ data }) => {
       setSections([...data.sections].sort((a, b) => a.order - b.order));
     });
-  }, [slug]);
+  }, [slug, locale]);
 
   const updateLocal = (id, patch) => {
     setSections((prev) => prev.map((s) => (s.id === id ? { ...s, ...patch } : s)));
@@ -48,7 +51,7 @@ export default function SectionsEditor() {
     setSavingId(section.id);
     setError("");
     try {
-      await api.put(`/content/pages/${slug}/sections/${section.id}`, { data: section.data, visible: section.visible });
+      await api.put(`/content/pages/${slug}/sections/${section.id}`, { data: section.data, visible: section.visible }, { params: { locale } });
       setSavedId(section.id);
       setTimeout(() => setSavedId((id) => (id === section.id ? null : id)), 1800);
     } catch (err) {
@@ -65,7 +68,7 @@ export default function SectionsEditor() {
     [next[index], next[j]] = [next[j], next[index]];
     setSections(next);
     try {
-      await api.put(`/content/pages/${slug}/sections/reorder`, { order: next.map((s) => s.id) });
+      await api.put(`/content/pages/${slug}/sections/reorder`, { order: next.map((s) => s.id) }, { params: { locale } });
     } catch (err) {
       setError(err.message);
     }
@@ -75,10 +78,11 @@ export default function SectionsEditor() {
     <div>
       <h1 className="text-2xl font-extrabold text-ink">Page Sections</h1>
       <p className="mt-1 text-sm text-ink-soft">
-        Choose a page, then edit each section's content. Toggle visibility, reorder, and save.
+        Choose a page and a language, then edit each section's content. Each language has its
+        own copy — editing French here does not change English.
       </p>
 
-      <div className="mt-6">
+      <div className="mt-6 flex flex-wrap items-center gap-4">
         <select value={slug ?? ""} onChange={(e) => setSlug(e.target.value)} className="admin-input w-auto min-w-[260px]">
           {pages.map((p) => (
             <option key={p.slug} value={p.slug}>
@@ -86,6 +90,7 @@ export default function SectionsEditor() {
             </option>
           ))}
         </select>
+        <LocalePicker value={locale} onChange={setLocale} />
       </div>
 
       {error && <p className="mt-4 rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-600">{error}</p>}

@@ -14,7 +14,11 @@ export const PATH_TO_SLUG = {
   "/contact": "contact",
 };
 
-/** Resolve a Next optional-catch-all `slug` param (array | undefined) to a content slug. */
+/**
+ * Resolve a Next optional-catch-all `slug` param (array | undefined) to a
+ * content slug. The locale lives in its own route segment, so what arrives
+ * here is already locale-free.
+ */
 export function slugFromSegments(segments) {
   const path = "/" + (Array.isArray(segments) ? segments.join("/") : "");
   const normalized = path === "/" ? "/" : path.replace(/\/$/, "");

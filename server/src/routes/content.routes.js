@@ -1,8 +1,13 @@
 import { Router } from "express";
 import { getContent, saveContent } from "../data/collections.js";
 import { requireAuth } from "../middleware/auth.js";
+import { LOCALES, DEFAULT_LOCALE, normalizeLocale } from "../i18n.js";
 
 const router = Router();
+
+// Every content endpoint is locale-scoped. Unknown values fall back to the
+// default locale rather than 404ing, so a bad ?locale= never blanks the site.
+const localeOf = (req) => normalizeLocale(req.query.locale);
 
 function getPageOr404(content, slug, res) {
   const page = content.pages[slug];
@@ -15,13 +20,14 @@ function getPageOr404(content, slug, res) {
 
 // Public: brand, nav, footer — shared across every page
 router.get("/meta", (req, res) => {
-  const { brand, nav, footer, popup } = getContent();
-  res.json({ brand, nav, footer, popup });
+  const { brand, nav, footer, popup } = getContent(localeOf(req));
+  res.json({ brand, nav, footer, popup, locale: localeOf(req), locales: LOCALES, defaultLocale: DEFAULT_LOCALE });
 });
 
 // Admin: update brand/nav/footer
 router.put("/meta", requireAuth, (req, res) => {
-  const content = getContent();
+  const locale = localeOf(req);
+  const content = getContent(locale);
   const { brand, nav, footer, popup } = req.body || {};
   const next = {
     ...content,
@@ -30,13 +36,14 @@ router.put("/meta", requireAuth, (req, res) => {
     footer: footer ?? content.footer,
     popup: popup ? { ...content.popup, ...popup } : content.popup,
   };
-  saveContent(next);
+  saveContent(next, locale);
   res.json({ brand: next.brand, nav: next.nav, footer: next.footer, popup: next.popup });
 });
 
 // Public: list of pages (slug + title) — used for admin nav and sitemaps
 router.get("/pages", (req, res) => {
-  const content = getContent();
+  const locale = localeOf(req);
+  const content = getContent(locale);
   const list = Object.entries(content.pages).map(([slug, page]) => ({
     slug,
     title: page.seo?.title || slug,
@@ -46,7 +53,8 @@ router.get("/pages", (req, res) => {
 
 // Public: one page's full content (seo + sections)
 router.get("/pages/:slug", (req, res) => {
-  const content = getContent();
+  const locale = localeOf(req);
+  const content = getContent(locale);
   const page = getPageOr404(content, req.params.slug, res);
   if (!page) return;
   res.json(page);
@@ -54,18 +62,20 @@ router.get("/pages/:slug", (req, res) => {
 
 // Admin: update a page's SEO fields
 router.put("/pages/:slug/seo", requireAuth, (req, res) => {
-  const content = getContent();
+  const locale = localeOf(req);
+  const content = getContent(locale);
   const page = getPageOr404(content, req.params.slug, res);
   if (!page) return;
 
   page.seo = { ...page.seo, ...(req.body || {}) };
-  saveContent(content);
+  saveContent(content, locale);
   res.json(page);
 });
 
 // Admin: update a single section's data/visibility
 router.put("/pages/:slug/sections/:id", requireAuth, (req, res) => {
-  const content = getContent();
+  const locale = localeOf(req);
+  const content = getContent(locale);
   const page = getPageOr404(content, req.params.slug, res);
   if (!page) return;
 
@@ -78,7 +88,7 @@ router.put("/pages/:slug/sections/:id", requireAuth, (req, res) => {
     data: data ?? page.sections[idx].data,
     visible: typeof visible === "boolean" ? visible : page.sections[idx].visible,
   };
-  saveContent(content);
+  saveContent(content, locale);
   res.json(page.sections[idx]);
 });
 
@@ -87,7 +97,8 @@ router.put("/pages/:slug/sections/reorder", requireAuth, (req, res) => {
   const { order } = req.body || {};
   if (!Array.isArray(order)) return res.status(400).json({ error: "order must be an array of section ids" });
 
-  const content = getContent();
+  const locale = localeOf(req);
+  const content = getContent(locale);
   const page = getPageOr404(content, req.params.slug, res);
   if (!page) return;
 
@@ -102,7 +113,7 @@ router.put("/pages/:slug/sections/reorder", requireAuth, (req, res) => {
   }
 
   page.sections = reordered;
-  saveContent(content);
+  saveContent(content, locale);
   res.json(page.sections);
 });
 

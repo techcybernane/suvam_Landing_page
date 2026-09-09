@@ -1256,7 +1256,7 @@ export const defaultContent = {
   },
 };
 
-export const defaultFaqs = [
+const EN_FAQS = [
   {
     id: id(),
     question: "Do you work with organizations outside Chad?",
@@ -1288,6 +1288,46 @@ export const defaultFaqs = [
       "Yes. Corporate programs are built around your cybersecurity requirements, network environment, systems architecture, IT policies, skill gaps and certification objectives — delivered in person, online instructor-led, or through distance and e-learning.",
   },
 ];
+
+const FR_FAQS = [
+  {
+    id: id(),
+    question: "Travaillez-vous avec des organisations hors du Tchad ?",
+    answer:
+      "Oui. Nous sommes basés à N'Djamena et travaillons avec des entreprises, des institutions publiques et des organisations internationales dans toute la région — sur site, à distance et en infogérance.",
+  },
+  {
+    id: id(),
+    question: "Pouvez-vous reprendre un environnement construit par quelqu'un d'autre ?",
+    answer:
+      "Régulièrement. Nous commençons par un audit de l'infrastructure, des applications et de la posture de sécurité existantes, puis nous convenons d'un plan de transition avant toute modification en production.",
+  },
+  {
+    id: id(),
+    question: "Faites-vous seulement du conseil, ou aussi la mise en œuvre ?",
+    answer:
+      "Les deux. Contrairement aux cabinets qui s'arrêtent aux recommandations, CybernaNet déploie, sécurise puis accompagne les solutions qu'elle conçoit : évaluer, planifier, déployer, sécuriser, accompagner.",
+  },
+  {
+    id: id(),
+    question: "Sous quel délai pouvez-vous répondre à un incident de sécurité ?",
+    answer:
+      "La capacité de réponse aux incidents fait partie de nos engagements d'infogérance, avec une supervision et un support 24 h/24, 7 j/7. Pour les organisations que nous ne gérons pas encore, contactez-nous : nous vous dirons honnêtement ce que nous pouvons mobiliser et à quelle vitesse.",
+  },
+  {
+    id: id(),
+    question: "La formation peut-elle être dispensée à toute notre équipe ?",
+    answer:
+      "Oui. Les programmes en entreprise sont construits autour de vos exigences de cybersécurité, de votre environnement réseau, de votre architecture système, de vos politiques IT, de vos déficits de compétences et de vos objectifs de certification — en présentiel, en ligne avec formateur, à distance ou en e-learning.",
+  },
+];
+
+// Each FAQ carries its own locale; the public endpoint filters on it and on
+// `enabled`, so both fields have to be seeded or nothing renders.
+const withDefaults = (list, locale) =>
+  list.map((f, i) => ({ ...f, locale, enabled: true, order: i, category: "General" }));
+
+export const defaultFaqs = [...withDefaults(EN_FAQS, "en"), ...withDefaults(FR_FAQS, "fr")];
 
 export const defaultSettings = {
   leadRecipients: ["CybernaNet@gmail.com"],
