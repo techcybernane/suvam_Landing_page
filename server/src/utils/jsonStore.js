@@ -3,7 +3,14 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = path.join(__dirname, "..", "..", "data");
+
+// DATA_DIR lets the JSON store live on a mounted persistent volume. Hosting
+// platforms wipe the application directory on every deploy, so in production
+// this must point at a disk that survives — otherwise all content edits, leads
+// and admin accounts are lost on the next release.
+export const DATA_DIR = process.env.DATA_DIR
+  ? path.resolve(process.env.DATA_DIR)
+  : path.join(__dirname, "..", "..", "data");
 
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });

@@ -1,0 +1,5 @@
+# Only web/ is deployed to Vercel. The Express API needs a persistent disk and
+# is hosted separately (see render.yaml / server/Dockerfile).
+client
+server
+.claude

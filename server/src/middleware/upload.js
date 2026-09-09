@@ -5,7 +5,12 @@ import { fileURLToPath } from "url";
 import { randomUUID } from "crypto";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-export const UPLOAD_DIR = path.join(__dirname, "..", "..", "uploads");
+
+// Uploads follow DATA_DIR onto the persistent volume for the same reason the
+// JSON store does — see server/src/utils/jsonStore.js.
+export const UPLOAD_DIR = process.env.DATA_DIR
+  ? path.join(path.resolve(process.env.DATA_DIR), "uploads")
+  : path.join(__dirname, "..", "..", "uploads");
 
 if (!fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });

@@ -68,3 +68,88 @@ that's the one place you'd swap in a real database.
 - Configure real `SMTP_*` credentials so leads actually get emailed.
 - Build the client with `npm run build` in `client/` and serve the `dist/` folder from
   your host of choice (or have the Express server serve it statically).
+
+## Deployment
+
+The two halves of this project deploy to **different hosts**, and that is deliberate.
+
+| Part | Host | Why |
+| --- | --- | --- |
+| `web/` — Next.js site + admin UI | **Vercel** | Standard Next app, fully supported. |
+| `server/` — Express API | **Render / Railway / Fly / any VPS** | It writes to disk. Vercel cannot host it. |
+
+### Why the API cannot go on Vercel
+
+The API is not a stateless service. It writes to the filesystem on every:
+
+- admin content save (`content.json`)
+- FAQ edit (`faqs.json`)
+- contact-form or popup submission (`leads.json`)
+- media upload (`uploads/`)
+- first boot (`users.json`, `settings.json`)
+
+Vercel functions run on a read-only filesystem apart from `/tmp`, which is
+per-instance and discarded between invocations. Deployed there, every one of the
+above would appear to succeed and then vanish. It needs a host with a
+**persistent volume**, and `DATA_DIR` must point at that volume — the
+application directory itself is wiped on each deploy.
+
+(Moving the API onto Vercel is possible, but it means replacing the JSON store
+with a managed database and object storage. That is a separate piece of work.)
+
+### 1. Deploy the API first
+
+The frontend needs its URL, so start here.
+
+**Render** — `render.yaml` at the repo root describes the service, a 1 GB disk
+mounted at `/var/data`, and the health check. Create a Blueprint from the repo,
+then set in the dashboard:
+
+```
+CLIENT_ORIGIN    https://<your-vercel-domain>
+ADMIN_EMAIL      your real admin address
+ADMIN_PASSWORD   a strong password  # used once, to seed the first account
+```
+
+`JWT_SECRET` is generated automatically; `DATA_DIR=/var/data` is already set.
+Note the `starter` plan is specified because Render's free tier has no
+persistent disk.
+
+**Anywhere else** — `server/Dockerfile` builds a portable image. Mount a volume
+at `/var/data` and pass the same environment variables (see
+`server/.env.example`).
+
+Confirm it is up: `curl https://<api-domain>/api/health`
+
+### 2. Deploy the frontend to Vercel
+
+Import the repo, then **set Root Directory to `web`** — this is the one setting
+that cannot live in `vercel.json`, and the build fails without it.
+
+Add one environment variable:
+
+```
+BACKEND_ORIGIN   https://<api-domain>     # no trailing slash
+```
+
+`web/vercel.json` handles the rest (framework, region `cdg1` for francophone
+Africa, security headers, `noindex` on `/admin`).
+
+`web/next.config.js` proxies `/api` and `/uploads` through to the API, so the
+browser only ever talks to the Vercel domain. That is what keeps the httpOnly
+auth cookie same-site — do not point the admin UI straight at the API domain.
+
+### 3. After the first deploy
+
+- Sign in at `/admin` and **change the seeded admin password**.
+- Set `CLIENT_ORIGIN` on the API to the real Vercel domain.
+- Content, both locales, seeds itself on first boot from
+  `server/src/seed/defaults.js` + `translations.fr.json`; from then on it is
+  edited through the admin panel and lives on the volume.
+
+### Production safeguards
+
+- The API **refuses to start** in production if `JWT_SECRET` is unset, rather
+  than falling back to the shared development secret.
+- `CLIENT_ORIGIN` accepts a comma-separated allow-list (production + previews).
+- `GET /api/health` is a liveness probe for the platform.

@@ -1,0 +1,50 @@
+# Deploy target for the Express API (server/).
+#
+# The API is NOT deployed to Vercel: it writes the JSON content store, uploaded
+# media, leads and admin accounts to disk on every save, and Vercel's serverless
+# filesystem is read-only apart from an ephemeral /tmp. It needs a host with a
+# persistent volume — this file describes one (Render); server/Dockerfile covers
+# any other container host.
+services:
+  - type: web
+    name: cybernanet-api
+    runtime: node
+    plan: starter # the free plan has no persistent disk
+    region: frankfurt
+    rootDir: server
+    buildCommand: npm ci --omit=dev
+    startCommand: npm start
+    healthCheckPath: /api/health
+    disk:
+      name: cybernanet-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Content store + uploads live on the mounted disk so they survive deploys.
+      - key: DATA_DIR
+        value: /var/data
+      - key: JWT_SECRET
+        generateValue: true
+      # Set these in the Render dashboard before the first boot.
+      - key: CLIENT_ORIGIN
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_SECURE
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_FROM_NAME
+        sync: false
+      - key: SMTP_FROM_EMAIL
+        sync: false

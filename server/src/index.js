@@ -18,9 +18,23 @@ import { ensureSeeded } from "./seed/seed.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 
+// Comma-separated allow-list so one deployment can serve the local dev origin,
+// the Vercel production domain and its preview domains.
+const ALLOWED_ORIGINS = (process.env.CLIENT_ORIGIN || "http://localhost:3000,http://localhost:5173")
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
 app.use(
   cors({
-    origin: process.env.CLIENT_ORIGIN || "http://localhost:5173",
+    origin(origin, cb) {
+      // Same-origin/server-to-server requests arrive without an Origin header.
+      // In practice the browser never calls this API cross-origin: Next proxies
+      // /api through its own domain (see web/next.config.js), which is what
+      // keeps the httpOnly auth cookie same-site.
+      if (!origin || ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
+      cb(new Error(`Origin ${origin} is not allowed by CORS`));
+    },
     credentials: true,
   })
 );
@@ -36,7 +50,10 @@ app.use("/api/media", mediaRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
-app.get("/api/health", (req, res) => res.json({ ok: true }));
+// Liveness probe for the hosting platform's health check.
+app.get("/api/health", (req, res) =>
+  res.json({ ok: true, uptime: process.uptime(), env: process.env.NODE_ENV || "development" })
+);
 
 app.use((err, req, res, next) => {
   console.error(err);
@@ -46,6 +63,8 @@ app.use((err, req, res, next) => {
 ensureSeeded();
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`CybernaNet API listening on http://localhost:${PORT}`);
+// Bind on all interfaces: container platforms route to the container IP, not
+// to loopback.
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`CybernaNet API listening on port ${PORT}`);
 });
