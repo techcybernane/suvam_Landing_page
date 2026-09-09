@@ -1,5 +1,9 @@
 node_modules
 .env
-data/
-uploads/*
-!uploads/.gitkeep
+
+# Anchored with a leading slash. Unanchored "data/" matches a directory of that
+# name at ANY depth, which silently excluded server/src/data/ — application
+# source that every route imports — from the repository.
+/data/
+/uploads/*
+!/uploads/.gitkeep
