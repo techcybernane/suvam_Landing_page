@@ -15,7 +15,7 @@ COPY . .
 ENV NODE_ENV=production \
     DATA_DIR=/var/data \
     PORT=4000
-RUN mkdir -p /var/data
+RUN mkdir -p /var/data && chown -R node:node /var/data /app
 VOLUME ["/var/data"]
 
 EXPOSE 4000
