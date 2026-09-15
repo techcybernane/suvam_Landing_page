@@ -4,6 +4,28 @@ import Reveal from "../ui/Reveal.jsx";
 import LocaleSwitch from "../ui/LocaleSwitch.jsx";
 import { t } from "../../lib/ui-strings.js";
 
+// The copyright is a single content string; linkify the "kodeclamp.com" credit
+// in place so it's clickable without changing the editable copy shape.
+function renderCopyright(text) {
+  const site = "kodeclamp.com";
+  if (!text?.includes(site)) return text;
+  const [before, after] = text.split(site);
+  return (
+    <>
+      {before}
+      <a
+        href="https://kodeclamp.com"
+        target="_blank"
+        rel="noreferrer"
+        className="text-bone/45 underline-offset-2 transition-colors hover:text-signal hover:underline"
+      >
+        {site}
+      </a>
+      {after}
+    </>
+  );
+}
+
 export default function Footer({ brand, footer, locale }) {
   if (!footer) return null;
   const name = brand?.name || "CybernaNet";
@@ -17,15 +39,9 @@ export default function Footer({ brand, footer, locale }) {
         <div className="grid gap-14 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <Reveal>
             <div className="flex items-center gap-3">
-              <span className="flex h-12 w-12 items-center justify-center rounded-2xl border border-signal/30 bg-signal/10 text-signal">
-                <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" aria-hidden>
-                  <path d="M6 7l6 11 6-11" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
+              <span className="inline-flex items-center rounded-2xl bg-white px-5 py-3.5 shadow-panel ring-1 ring-white/10">
+                <img src="/logo.png" alt={name} className="h-16 w-auto" />
               </span>
-              <div>
-                <p className="font-display text-fluid-xl font-semibold leading-none tracking-tight text-bone">{name}</p>
-                <p className="mt-2 font-mono text-[0.62rem] uppercase tracking-[0.2em] text-signal">{brand?.tagline}</p>
-              </div>
             </div>
             <p className="mt-7 max-w-sm text-fluid-sm leading-relaxed text-bone/50">{footer.tagline}</p>
 
@@ -58,7 +74,7 @@ export default function Footer({ brand, footer, locale }) {
         </div>
 
         <div className="mt-16 flex flex-col-reverse items-center justify-between gap-4 border-t border-white/[0.08] py-8 sm:flex-row">
-          <p className="font-mono text-[0.62rem] uppercase tracking-[0.14em] text-bone/30">{footer.copyright}</p>
+          <p className="font-mono text-[0.62rem] uppercase tracking-[0.14em] text-bone/30">{renderCopyright(footer.copyright)}</p>
           <div className="flex flex-wrap items-center gap-6">
             <LocaleSwitch />
             {footer.social?.map((s) => (

@@ -45,14 +45,9 @@ export default function Header({ brand, nav }) {
       }`}
     >
       <div className="container-page flex h-[76px] items-center justify-between">
-        <SmartLink href="/" className="group flex items-center gap-2.5">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-signal/30 bg-signal/10 text-signal transition-all duration-500 ease-editorial group-hover:bg-signal group-hover:text-void">
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" aria-hidden>
-              <path d="M6 7l6 11 6-11" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </span>
-          <span className="font-display text-fluid-lg font-semibold tracking-tight text-bone">
-            {brand?.name || "CybernaNet"}
+        <SmartLink href="/" className="group flex items-center" aria-label={brand?.name || "CybernaNet"}>
+          <span className="flex items-center rounded-xl bg-white px-3.5 py-2 shadow-panel ring-1 ring-white/10 transition-transform duration-500 ease-editorial group-hover:scale-[1.03]">
+            <img src="/logo.png" alt={brand?.name || "CybernaNet"} className="h-11 w-auto" />
           </span>
         </SmartLink>
 

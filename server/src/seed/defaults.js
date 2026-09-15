@@ -129,7 +129,7 @@ export const defaultContent = {
       },
     ],
     social: [],
-    copyright: `© ${new Date().getFullYear()} CybernaNet. All rights reserved.`,
+    copyright: `© ${new Date().getFullYear()} CybernaNet | All Rights Reserved | Powered by kodeclamp.com`,
   },
 
   pages: {
