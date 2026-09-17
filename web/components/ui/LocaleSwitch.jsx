@@ -18,13 +18,13 @@ export default function LocaleSwitch({ className = "", tone = "dark" }) {
 
   return (
     <div
-      className={`inline-flex items-center gap-0.5 rounded-pill border p-0.5 ${
-        light ? "border-void/15 bg-void/[0.04]" : "border-white/15 bg-white/[0.04]"
+      className={`inline-flex items-center gap-0.5 rounded-pill border p-0.5 backdrop-blur-md ${
+        light ? "border-void/20 bg-void/[0.06]" : "border-white/25 bg-void/40"
       } ${className}`}
       role="group"
       aria-label={t(active, "switchLanguage")}
     >
-      <Globe className={`ml-2 mr-0.5 h-3.5 w-3.5 ${light ? "text-void/40" : "text-bone/40"}`} aria-hidden />
+      <Globe className={`ml-2 mr-0.5 h-3.5 w-3.5 ${light ? "text-void/55" : "text-bone/70"}`} aria-hidden />
       {LOCALES.map((locale) => {
         const on = locale === active;
         return (
@@ -37,15 +37,15 @@ export default function LocaleSwitch({ className = "", tone = "dark" }) {
             className={`inline-flex min-w-[2.1rem] items-center justify-center rounded-pill px-3 py-2 font-mono font-semibold uppercase tracking-[0.12em] transition-all duration-300 ease-editorial sm:min-w-0 sm:px-2.5 sm:py-1.5 ${
               // Arabic is a single glyph and renders visually smaller than the
               // Latin labels — size it up so it is legible and easy to tap.
-              locale === "ar" ? "text-base leading-none sm:text-[0.95rem]" : "text-[0.72rem] sm:text-[0.66rem]"
+              locale === "ar" ? "text-lg sm:text-base" : "text-[0.72rem] sm:text-[0.66rem]"
             } ${
               on
                 ? light
                   ? "bg-void text-bone"
                   : "bg-signal text-void"
                 : light
-                  ? "text-void/45 hover:text-void"
-                  : "text-bone/45 hover:text-bone"
+                  ? "text-void/60 hover:text-void"
+                  : "text-bone/75 hover:text-bone"
             }`}
           >
             {LOCALE_LABELS[locale]}
