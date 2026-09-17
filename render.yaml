@@ -40,6 +40,11 @@ services:
       # force the existing admin back to those credentials; unset it afterwards.
       - key: ADMIN_RESET
         sync: false
+      # Set SEED_RESET=true and restart to rebuild content + FAQs from the seed
+      # (picks up new imagery/sections/copy). Discards admin content edits; unset
+      # it afterwards.
+      - key: SEED_RESET
+        sync: false
       - key: SMTP_HOST
         sync: false
       - key: SMTP_PORT

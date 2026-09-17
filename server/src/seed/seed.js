@@ -1,10 +1,21 @@
 import "dotenv/config";
 import bcrypt from "bcryptjs";
 import { randomUUID } from "crypto";
-import { users, getContent, faqs } from "../data/collections.js";
+import { users, getContent, faqs, resetContent } from "../data/collections.js";
 import { defaultFaqs } from "./defaults.js";
 
 export function ensureSeeded() {
+  // Recovery flag for headless hosts: the content store is never re-seeded once
+  // its file exists, so seed/content changes (new imagery, sections, copy fixes)
+  // won't otherwise reach a running deployment. Set SEED_RESET=true and restart
+  // to rebuild content + FAQs from the current defaults, then unset it. NOTE:
+  // this discards content edits made through the admin panel.
+  if (process.env.SEED_RESET === "true") {
+    resetContent();
+    faqs.replaceAll(defaultFaqs);
+    console.log("SEED_RESET: content + FAQs rebuilt from defaults — remove the SEED_RESET env var now.");
+  }
+
   // getContent() already writes the default content.json on first run (see
   // readJSON's fallback behavior) — just touch it, don't rewrite unconditionally,
   // or nodemon sees the changed mtime and restarts in a loop.
