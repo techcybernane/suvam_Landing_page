@@ -1,7 +1,7 @@
 import Header from "../../../components/site/Header.jsx";
 import Footer from "../../../components/site/Footer.jsx";
-import LeadPopup from "../../../components/site/LeadPopup.jsx";
 import ScrollProgress from "../../../components/ui/ScrollProgress.jsx";
+import ScrollToTop from "../../../components/ui/ScrollToTop.jsx";
 import SmoothScroll from "../../../components/ui/SmoothScroll.jsx";
 import { getSiteMeta } from "../../../lib/server-api.js";
 import { normalizeLocale } from "../../../lib/i18n.js";
@@ -34,7 +34,7 @@ export default async function SiteLayout({ children, params }) {
       {/* Header is fixed, so the page owns its own top offset per-section. */}
       <main>{children}</main>
       <Footer brand={meta.brand} footer={meta.footer} locale={locale} />
-      <LeadPopup config={meta.popup} />
+      <ScrollToTop />
     </div>
   );
 }

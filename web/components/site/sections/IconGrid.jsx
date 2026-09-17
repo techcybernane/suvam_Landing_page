@@ -16,45 +16,71 @@ const ICONS = [
 function Card({ card, index, total, t, tr }) {
   const Icon = ICONS[index % ICONS.length];
   const Wrapper = card.href ? SmartLink : "div";
+  const hasImage = Boolean(card.image);
 
   return (
     <Reveal delay={index * 70} className="h-full">
       <Wrapper
         href={card.href}
-        className={`group relative flex h-full min-h-[250px] flex-col overflow-hidden border p-8 transition-all duration-500 ease-editorial hover:-translate-y-1 ${t.card} ${t.cardHover} rounded-[22px]`}
+        className={`group relative flex h-full min-h-[250px] flex-col overflow-hidden border transition-all duration-500 ease-editorial hover:-translate-y-1 ${t.card} ${t.cardHover} rounded-[22px]`}
       >
-        {/* Index numeral sits behind the content and lifts on hover. */}
-        <span
-          aria-hidden
-          className={`pointer-events-none absolute right-4 top-2 select-none font-display text-[4.5rem] font-semibold leading-none tracking-tightest transition-all duration-700 ease-editorial group-hover:-translate-y-1 ${
-            t.light ? "text-void/[0.045] group-hover:text-signal-deep/15" : "text-white/[0.045] group-hover:text-signal/20"
-          }`}
-        >
-          {String(index + 1).padStart(2, "0")}
-        </span>
-
-        <span
-          className={`relative flex h-11 w-11 items-center justify-center rounded-xl border transition-all duration-500 ease-editorial ${t.border} ${
-            t.light
-              ? "bg-bone text-signal-deep group-hover:bg-void group-hover:text-signal"
-              : "bg-white/[0.04] text-signal group-hover:bg-signal group-hover:text-void"
-          }`}
-        >
-          <Icon className="h-5 w-5" />
-        </span>
-
-        <h3 className={`relative mt-7 text-fluid-lg font-semibold leading-snug tracking-tight ${t.heading}`}>
-          {card.title}
-        </h3>
-        {card.description && (
-          <p className={`relative mt-3 flex-1 text-fluid-sm leading-relaxed ${t.body}`}>{card.description}</p>
+        {/* Optional cover image bleeds to the card edges; the copy sits below it. */}
+        {hasImage && (
+          <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden">
+            <img
+              src={card.image}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover transition-transform duration-[1400ms] ease-editorial group-hover:scale-[1.06]"
+            />
+            <div
+              className={`pointer-events-none absolute inset-0 ${
+                t.light
+                  ? "bg-[linear-gradient(to_top,rgba(255,255,255,0.92),rgba(255,255,255,0.05))]"
+                  : "bg-[linear-gradient(to_top,rgba(9,11,20,0.9),rgba(9,11,20,0.1))]"
+              }`}
+              aria-hidden
+            />
+          </div>
         )}
-        {card.href && (
-          <span className={`relative mt-7 inline-flex items-center gap-1.5 font-mono text-[0.66rem] uppercase tracking-[0.18em] ${t.accent}`}>
-            {tr("explore")}
-            <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 ease-editorial group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+
+        <div className={`relative flex flex-1 flex-col ${hasImage ? "px-8 pb-8 pt-7" : "p-8"}`}>
+          {/* Index numeral sits behind the content and lifts on hover. */}
+          <span
+            aria-hidden
+            className={`pointer-events-none absolute right-4 top-2 select-none font-display text-[4.5rem] font-semibold leading-none tracking-tightest transition-all duration-700 ease-editorial group-hover:-translate-y-1 ${
+              t.light ? "text-void/[0.045] group-hover:text-signal-deep/15" : "text-white/[0.045] group-hover:text-signal/20"
+            }`}
+          >
+            {String(index + 1).padStart(2, "0")}
           </span>
-        )}
+
+          <span
+            className={`relative flex h-11 w-11 items-center justify-center rounded-xl border transition-all duration-500 ease-editorial ${t.border} ${
+              hasImage ? "-mt-[46px] mb-4 " : ""
+            }${
+              t.light
+                ? "bg-bone text-signal-deep group-hover:bg-void group-hover:text-signal"
+                : "bg-white/[0.04] text-signal group-hover:bg-signal group-hover:text-void"
+            } ${hasImage ? "shadow-panel backdrop-blur-sm" : ""}`}
+          >
+            <Icon className="h-5 w-5" />
+          </span>
+
+          <h3 className={`relative ${hasImage ? "mt-0" : "mt-7"} text-fluid-lg font-semibold leading-snug tracking-tight ${t.heading}`}>
+            {card.title}
+          </h3>
+          {card.description && (
+            <p className={`relative mt-3 flex-1 text-fluid-sm leading-relaxed ${t.body}`}>{card.description}</p>
+          )}
+          {card.href && (
+            <span className={`relative mt-7 inline-flex items-center gap-1.5 font-mono text-[0.66rem] uppercase tracking-[0.18em] ${t.accent}`}>
+              {tr("explore")}
+              <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 ease-editorial group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </span>
+          )}
+        </div>
       </Wrapper>
     </Reveal>
   );

@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import "./globals.css";
-import { normalizeLocale } from "../lib/i18n.js";
+import { normalizeLocale, isRtl } from "../lib/i18n.js";
 
 export const metadata = {
   title: "CybernaNet — Innovate. Secure. Transform.",
@@ -14,7 +14,7 @@ export default async function RootLayout({ children }) {
   const locale = normalizeLocale((await headers()).get("x-locale"));
 
   return (
-    <html lang={locale}>
+    <html lang={locale} dir={isRtl(locale) ? "rtl" : "ltr"}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />

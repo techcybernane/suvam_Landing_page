@@ -4,34 +4,58 @@ import SectionHeading from "../../ui/SectionHeading.jsx";
 import { toneOf } from "../../../lib/tone.js";
 
 function Group({ group, index, t }) {
+  const hasImage = Boolean(group.image);
   return (
     <Reveal delay={index * 90} className="h-full">
       <div
-        className={`group relative flex h-full flex-col overflow-hidden rounded-[22px] border p-8 transition-all duration-500 ease-editorial hover:-translate-y-1 ${t.card} ${t.cardHover}`}
+        className={`group relative flex h-full flex-col overflow-hidden rounded-[22px] border transition-all duration-500 ease-editorial hover:-translate-y-1 ${t.card} ${t.cardHover}`}
       >
-        <span
-          aria-hidden
-          className={`pointer-events-none absolute right-4 top-2 select-none font-display text-[4.5rem] font-semibold leading-none tracking-tightest transition-colors duration-700 ${
-            t.light ? "text-void/[0.045] group-hover:text-signal-deep/15" : "text-white/[0.045] group-hover:text-signal/20"
-          }`}
-        >
-          {String(index + 1).padStart(2, "0")}
-        </span>
-
-        <span className={`relative inline-flex h-1 w-10 rounded-full ${t.light ? "bg-signal-deep" : "bg-signal"}`} />
-        <h3 className={`relative mt-6 text-fluid-lg font-semibold tracking-tight ${t.heading}`}>{group.title}</h3>
-        {group.intro && <p className={`relative mt-3 text-fluid-sm leading-relaxed ${t.body}`}>{group.intro}</p>}
-
-        {group.items?.length > 0 && (
-          <ul className="relative mt-6 space-y-3">
-            {group.items.map((item, i) => (
-              <li key={i} className={`flex items-start gap-2.5 text-fluid-sm ${t.body}`}>
-                <Check className={`mt-0.5 h-4 w-4 shrink-0 ${t.accent}`} />
-                {item}
-              </li>
-            ))}
-          </ul>
+        {/* Optional cover image bleeds to the card edges; the copy sits below it. */}
+        {hasImage && (
+          <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden">
+            <img
+              src={group.image}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="h-full w-full object-cover transition-transform duration-[1400ms] ease-editorial group-hover:scale-[1.06]"
+            />
+            <div
+              className={`pointer-events-none absolute inset-0 ${
+                t.light
+                  ? "bg-[linear-gradient(to_top,rgba(255,255,255,0.92),rgba(255,255,255,0.05))]"
+                  : "bg-[linear-gradient(to_top,rgba(9,11,20,0.9),rgba(9,11,20,0.1))]"
+              }`}
+              aria-hidden
+            />
+          </div>
         )}
+
+        <div className={`relative flex flex-1 flex-col ${hasImage ? "px-8 pb-8 pt-7" : "p-8"}`}>
+          <span
+            aria-hidden
+            className={`pointer-events-none absolute right-4 top-2 select-none font-display text-[4.5rem] font-semibold leading-none tracking-tightest transition-colors duration-700 ${
+              t.light ? "text-void/[0.045] group-hover:text-signal-deep/15" : "text-white/[0.045] group-hover:text-signal/20"
+            }`}
+          >
+            {String(index + 1).padStart(2, "0")}
+          </span>
+
+          <span className={`relative inline-flex h-1 w-10 rounded-full ${t.light ? "bg-signal-deep" : "bg-signal"}`} />
+          <h3 className={`relative mt-6 text-fluid-lg font-semibold tracking-tight ${t.heading}`}>{group.title}</h3>
+          {group.intro && <p className={`relative mt-3 text-fluid-sm leading-relaxed ${t.body}`}>{group.intro}</p>}
+
+          {group.items?.length > 0 && (
+            <ul className="relative mt-6 space-y-3">
+              {group.items.map((item, i) => (
+                <li key={i} className={`flex items-start gap-2.5 text-fluid-sm ${t.body}`}>
+                  <Check className={`mt-0.5 h-4 w-4 shrink-0 ${t.accent}`} />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </Reveal>
   );

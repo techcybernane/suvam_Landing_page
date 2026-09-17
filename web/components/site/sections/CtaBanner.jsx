@@ -10,6 +10,13 @@ export default function CtaBanner({ data }) {
 
   return (
     <section className="relative overflow-hidden border-t border-white/[0.08] bg-void py-24 md:py-32">
+      {/* Optional photographic backdrop, dimmed hard so the headline stays legible. */}
+      {data.image && (
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
+          <img src={data.image} alt="" className="h-full w-full object-cover opacity-[0.16]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(4,7,15,0.55),rgba(4,7,15,0.94))]" />
+        </div>
+      )}
       <div className="bg-grid pointer-events-none absolute inset-0 opacity-60 [mask-image:radial-gradient(ellipse_at_50%_50%,black,transparent_70%)]" aria-hidden />
       <div className="animate-breathe pointer-events-none absolute left-1/2 top-1/2 h-[520px] w-[860px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-signal/10 blur-[150px]" aria-hidden />
 

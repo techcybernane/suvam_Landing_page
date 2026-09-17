@@ -19,6 +19,10 @@ export default function SmoothScroll() {
       touchMultiplier: 1.6,
     });
 
+    // Shared so components like the scroll-to-top button can drive the same
+    // inertia rather than a competing native scroll.
+    window.__lenis = lenis;
+
     let raf = 0;
     const loop = (time) => {
       lenis.raf(time);
@@ -53,6 +57,7 @@ export default function SmoothScroll() {
       document.removeEventListener("click", onClick);
       cancelAnimationFrame(raf);
       lenis.destroy();
+      if (window.__lenis === lenis) delete window.__lenis;
     };
   }, []);
 

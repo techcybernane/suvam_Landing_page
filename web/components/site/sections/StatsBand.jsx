@@ -16,6 +16,13 @@ export default function StatsBand({ data, tone, num }) {
 
   return (
     <section className={`section-pad relative overflow-hidden border-t ${t.border} ${t.bg}`}>
+      {/* Optional photographic backdrop, dimmed behind the numbers. */}
+      {data.image && (
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
+          <img src={data.image} alt="" className="h-full w-full object-cover opacity-[0.12]" />
+          <div className={`absolute inset-0 ${t.light ? "bg-bone/80" : "bg-void/80"}`} />
+        </div>
+      )}
       <div className={`${t.grid} pointer-events-none absolute inset-0 opacity-60 [mask-image:radial-gradient(ellipse_at_50%_0%,black,transparent_70%)]`} aria-hidden />
 
       <div className="container-page relative">
