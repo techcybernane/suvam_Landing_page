@@ -7,7 +7,11 @@ function section(type, order, data) {
 }
 
 // Curated stock imagery (Unsplash). Editable per-section from the admin panel.
-const img = (photoId) => `https://images.unsplash.com/${photoId}?auto=format&fit=crop&w=1600&q=80`;
+// `auto=format` lets Unsplash serve AVIF/WebP; 1280px @ q72 keeps these sharp on
+// virtually every screen while roughly halving the payload versus 1600 @ q80 —
+// the site carries a lot of section/card imagery, so this is the main lever on
+// page weight. The admin can paste any wider URL on a hero if needed.
+const img = (photoId) => `https://images.unsplash.com/${photoId}?auto=format&fit=crop&w=1280&q=72`;
 const IMG = {
   heroCode: img("photo-1526374965328-7f61d4dc18c5"),
   cyber: img("photo-1550751827-4bd374c3f58b"),
@@ -28,6 +32,22 @@ const IMG = {
   people: img("photo-1522071820081-009f0129c71c"),
   monitor: img("photo-1551288049-bebda4e38f71"),
   automation: img("photo-1518186285589-2f7649de83e0"),
+  // --- added for richer per-card and per-section imagery ---
+  finance: img("photo-1460925895917-afdab827c52f"),      // analytics dashboard
+  trading: img("photo-1454165804606-c3d57bc86b40"),       // markets / charts
+  government: img("photo-1529107386315-e1a2ed48a620"),    // institutional building
+  startup: img("photo-1521737604893-d14cc237f11d"),       // founders at work
+  industrial: img("photo-1581092160562-40aa08e78837"),    // industry / engineering
+  cloudTech: img("photo-1544890225-2f3faec4cd60"),         // cloud infrastructure
+  developer: img("photo-1461749280684-dccba630e2f6"),      // code on screen
+  mobileDev: img("photo-1512941937669-90a1b58e7e9c"),      // mobile app
+  consulting: img("photo-1552664730-d307ca884978"),        // strategy session
+  support: img("photo-1553484771-371a605b060b"),           // technical support
+  office: img("photo-1497215728101-856f4ea42174"),         // open office
+  analytics: img("photo-1543286386-713bdd548da4"),         // data & BI
+  workshop: img("photo-1531482615713-2afd69097998"),       // collaboration
+  strategy: img("photo-1517245386807-bb43f82c33c4"),       // planning
+  founder: img("photo-1560250097-0b93528c311a"),           // professional portrait (placeholder — swap for the real founder photo)
 };
 
 const SOLUTIONS_NAV = [
@@ -74,7 +94,7 @@ export const defaultContent = {
   // editable from Admin → Site & SEO, and submissions land in Leads with
   // source "Popup Form".
   popup: {
-    enabled: true,
+    enabled: false,
     delaySeconds: 25,
     exitIntent: true,
     repeatAfterDays: 7,
@@ -129,7 +149,7 @@ export const defaultContent = {
       },
     ],
     social: [],
-    copyright: `© ${new Date().getFullYear()} CybernaNet | All Rights Reserved | Powered by kodeclamp.com`,
+    copyright: `© ${new Date().getFullYear()} CybernaNet | All Rights Reserved`,
   },
 
   pages: {
@@ -301,14 +321,14 @@ export const defaultContent = {
           heading: "One partner. Multiple technology",
           accent: "capabilities.",
           cards: [
-            { id: id(), title: "Cybersecurity", description: "Protect your systems, networks, identities and data with proactive security assessments, security architecture, penetration testing, monitoring and incident response.", href: "/solutions/cybersecurity" },
-            { id: id(), title: "Network & IT Infrastructure", description: "Design and implement reliable enterprise networks, servers, Wi-Fi, data centers, virtualization and business continuity environments.", href: "/solutions/network-infrastructure" },
-            { id: id(), title: "Cloud & Hybrid Infrastructure", description: "Build scalable cloud and hybrid environments while maintaining security, performance and operational control.", href: "/solutions/network-infrastructure" },
-            { id: id(), title: "Web & Software Development", description: "Create secure, scalable websites, e-commerce platforms, SaaS applications, customer portals and business applications.", href: "/solutions/software-development" },
-            { id: id(), title: "Managed IT Services", description: "Keep your technology environment operational through technical support, maintenance, monitoring and managed IT services.", href: "/solutions/managed-it" },
-            { id: id(), title: "Consulting & Digital Transformation", description: "Turn technology into a business advantage through IT strategy, digital transformation and technology advisory.", href: "/solutions/it-consulting" },
-            { id: id(), title: "Data, AI & Automation", description: "Use data, automation and emerging technologies to improve efficiency, decision-making and business performance.", href: "/solutions" },
-            { id: id(), title: "Training & Certifications", description: "Develop practical technology capabilities through professional training and globally recognized certification pathways.", href: "/solutions/training-certifications" },
+            { id: id(), title: "Cybersecurity", description: "Protect your systems, networks, identities and data with proactive security assessments, security architecture, penetration testing, monitoring and incident response.", href: "/solutions/cybersecurity", image: IMG.cyber },
+            { id: id(), title: "Network & IT Infrastructure", description: "Design and implement reliable enterprise networks, servers, Wi-Fi, data centers, virtualization and business continuity environments.", href: "/solutions/network-infrastructure", image: IMG.serverRoom },
+            { id: id(), title: "Cloud & Hybrid Infrastructure", description: "Build scalable cloud and hybrid environments while maintaining security, performance and operational control.", href: "/solutions/network-infrastructure", image: IMG.cloudTech },
+            { id: id(), title: "Web & Software Development", description: "Create secure, scalable websites, e-commerce platforms, SaaS applications, customer portals and business applications.", href: "/solutions/software-development", image: IMG.code },
+            { id: id(), title: "Managed IT Services", description: "Keep your technology environment operational through technical support, maintenance, monitoring and managed IT services.", href: "/solutions/managed-it", image: IMG.support },
+            { id: id(), title: "Consulting & Digital Transformation", description: "Turn technology into a business advantage through IT strategy, digital transformation and technology advisory.", href: "/solutions/it-consulting", image: IMG.consulting },
+            { id: id(), title: "Data, AI & Automation", description: "Use data, automation and emerging technologies to improve efficiency, decision-making and business performance.", href: "/solutions", image: IMG.abstractAi },
+            { id: id(), title: "Training & Certifications", description: "Develop practical technology capabilities through professional training and globally recognized certification pathways.", href: "/solutions/training-certifications", image: IMG.training },
           ],
           cta: { label: "View All Solutions", href: "/solutions" },
         }),
@@ -332,6 +352,7 @@ export const defaultContent = {
           kicker: "By the numbers",
           heading: "Because technology works better when",
           accent: "everything works together",
+          image: IMG.circuit,
           stats: [
             { value: "360°", label: "Infrastructure, applications, security and people under one roof" },
             { value: "24/7", label: "Monitoring, technical support and managed IT" },
@@ -348,10 +369,10 @@ export const defaultContent = {
           intro:
             "CybernaNet designs solutions around your objectives, environment, risk profile and growth plans.",
           cards: [
-            { id: id(), title: "Financial Institutions", description: "Need strong security and resilience — cybersecurity, identity and access management, business continuity and disaster recovery.", href: "/industries" },
-            { id: id(), title: "Growing Businesses", description: "Need scalable infrastructure — enterprise-grade technology without building a large internal IT department.", href: "/industries" },
-            { id: id(), title: "Government Institutions", description: "Need secure and reliable systems — infrastructure security, secure applications, data protection and training.", href: "/industries" },
-            { id: id(), title: "Startups", description: "Need technology that can grow with the business — scalable foundations established from the beginning.", href: "/industries" },
+            { id: id(), title: "Financial Institutions", description: "Need strong security and resilience — cybersecurity, identity and access management, business continuity and disaster recovery.", href: "/industries", image: IMG.finance },
+            { id: id(), title: "Growing Businesses", description: "Need scalable infrastructure — enterprise-grade technology without building a large internal IT department.", href: "/industries", image: IMG.office },
+            { id: id(), title: "Government Institutions", description: "Need secure and reliable systems — infrastructure security, secure applications, data protection and training.", href: "/industries", image: IMG.government },
+            { id: id(), title: "Startups", description: "Need technology that can grow with the business — scalable foundations established from the beginning.", href: "/industries", image: IMG.startup },
           ],
           cta: { label: "Explore Industries", href: "/industries" },
         }),
@@ -390,6 +411,7 @@ export const defaultContent = {
           accent: "digital Africa",
           subtext:
             "Digital transformation is not only about adopting technology. It is about building the infrastructure, security and human capabilities required to use that technology effectively.",
+          image: IMG.earthNet,
           buttons: [
             // Scrolls to the form below rather than sending the visitor to
             // another page for something they can do right here.
@@ -516,8 +538,8 @@ export const defaultContent = {
           heading: "Where we are going, and",
           accent: "why",
           cards: [
-            { id: id(), title: "Our Mission", description: "To design, integrate and secure innovative technology solutions that help organizations improve performance, protect their digital assets and accelerate digital transformation, while developing the technical capabilities of the next generation." },
-            { id: id(), title: "Our Vision", description: "To become a trusted technology and cybersecurity partner in Africa, recognized for technical excellence, innovation, security, quality of service and contribution to a stronger digital ecosystem." },
+            { id: id(), title: "Our Mission", description: "To design, integrate and secure innovative technology solutions that help organizations improve performance, protect their digital assets and accelerate digital transformation, while developing the technical capabilities of the next generation.", image: IMG.workshop },
+            { id: id(), title: "Our Vision", description: "To become a trusted technology and cybersecurity partner in Africa, recognized for technical excellence, innovation, security, quality of service and contribution to a stronger digital ecosystem.", image: IMG.earthNet },
           ],
         }),
 
@@ -601,12 +623,28 @@ export const defaultContent = {
           ctas: [{ label: "Talk to an Expert", href: "/contact" }],
         }),
 
-        section("ctaBanner", 7, {
+        section("featureSplit", 7, {
+          eyebrow: "About the Founder",
+          heading: "A message from our",
+          accent: "Founder",
+          badge: "Founder & CEO · CybernaNet",
+          body: [
+            "\"CybernaNet was born from a simple conviction: organizations across our region should not have to choose between building fast and staying secure. They deserve a partner that can do both — and one that leaves their teams stronger than it found them.\"",
+            "From the first assessment to the systems we secure and the people we train, the promise stays the same: technology that moves your business forward, protected from day one, and skills that remain with your team long after an engagement ends.",
+          ],
+          bullets: ["Security-first by conviction", "Local expertise, global standards", "Built to transfer knowledge", "Accountable end to end"],
+          image: IMG.founder,
+          imageSide: "left",
+          cta: { label: "Talk to the Team", href: "/contact" },
+        }),
+
+        section("ctaBanner", 8, {
           kicker: "Let's talk",
           heading: "Let's build",
           accent: "what's next",
           subtext:
             "Tell us what you're working on. Our team will help identify the right starting point.",
+          image: IMG.team,
           buttons: [{ label: "Talk to an Expert", href: "/contact" }],
         }),
       ],
@@ -642,14 +680,14 @@ export const defaultContent = {
           heading: "Every solution,",
           accent: "in depth",
           cards: [
-            { id: id(), title: "Cybersecurity", description: "Protect What Keeps Your Business Running. Security audits, risk & vulnerability assessment, penetration testing, security architecture, EDR, IDS/IPS, MFA, IAM, incident and ransomware response, and awareness.", href: "/solutions/cybersecurity" },
-            { id: id(), title: "Network & IT Infrastructure", description: "Infrastructure Designed for Performance and Resilience. LAN/WAN/VLAN, enterprise Wi-Fi, structured cabling, servers, storage, data centers, virtualization, high-availability, IP telephony and disaster recovery.", href: "/solutions/network-infrastructure" },
-            { id: id(), title: "Cloud & Hybrid Infrastructure", description: "Scale Without Losing Control. Cloud readiness, migration, hybrid infrastructure, cloud security, backup and recovery across AWS, Microsoft Azure and Google Cloud.", href: "/solutions/network-infrastructure" },
-            { id: id(), title: "Web & Software Development", description: "Digital Platforms Built for Business. Websites, e-commerce, custom web apps, SaaS platforms, customer portals, mobile apps, API integration, maintenance and SEO.", href: "/solutions/software-development" },
-            { id: id(), title: "Managed IT Services", description: "Technology Support Without the Headache. IT support, preventive maintenance, monitoring, system & network administration, asset management and optimization.", href: "/solutions/managed-it" },
-            { id: id(), title: "IT Consulting & Digital Transformation", description: "Turn Technology Into a Business Advantage. IT assessments, audits, transformation strategy, roadmaps, architecture, project management and modernization.", href: "/solutions/it-consulting" },
-            { id: id(), title: "Data, AI & Automation", description: "Make Your Technology Work Smarter. Data analysis, business intelligence, process & workflow automation, AI applications and data-driven decision support.", href: "/solutions" },
-            { id: id(), title: "Training & Certifications", description: "Build Skills. Build Confidence. Build Careers. Practical technology training and internationally recognized certification pathways.", href: "/solutions/training-certifications" },
+            { id: id(), title: "Cybersecurity", description: "Protect What Keeps Your Business Running. Security audits, risk & vulnerability assessment, penetration testing, security architecture, EDR, IDS/IPS, MFA, IAM, incident and ransomware response, and awareness.", href: "/solutions/cybersecurity", image: IMG.cyber },
+            { id: id(), title: "Network & IT Infrastructure", description: "Infrastructure Designed for Performance and Resilience. LAN/WAN/VLAN, enterprise Wi-Fi, structured cabling, servers, storage, data centers, virtualization, high-availability, IP telephony and disaster recovery.", href: "/solutions/network-infrastructure", image: IMG.serverRoom },
+            { id: id(), title: "Cloud & Hybrid Infrastructure", description: "Scale Without Losing Control. Cloud readiness, migration, hybrid infrastructure, cloud security, backup and recovery across AWS, Microsoft Azure and Google Cloud.", href: "/solutions/network-infrastructure", image: IMG.cloudTech },
+            { id: id(), title: "Web & Software Development", description: "Digital Platforms Built for Business. Websites, e-commerce, custom web apps, SaaS platforms, customer portals, mobile apps, API integration, maintenance and SEO.", href: "/solutions/software-development", image: IMG.code },
+            { id: id(), title: "Managed IT Services", description: "Technology Support Without the Headache. IT support, preventive maintenance, monitoring, system & network administration, asset management and optimization.", href: "/solutions/managed-it", image: IMG.support },
+            { id: id(), title: "IT Consulting & Digital Transformation", description: "Turn Technology Into a Business Advantage. IT assessments, audits, transformation strategy, roadmaps, architecture, project management and modernization.", href: "/solutions/it-consulting", image: IMG.consulting },
+            { id: id(), title: "Data, AI & Automation", description: "Make Your Technology Work Smarter. Data analysis, business intelligence, process & workflow automation, AI applications and data-driven decision support.", href: "/solutions", image: IMG.abstractAi },
+            { id: id(), title: "Training & Certifications", description: "Build Skills. Build Confidence. Build Careers. Practical technology training and internationally recognized certification pathways.", href: "/solutions/training-certifications", image: IMG.training },
           ],
         }),
         section("marquee", 3, {
@@ -671,6 +709,7 @@ export const defaultContent = {
           heading: "Not sure where to",
           accent: "start?",
           subtext: "Tell us what you're working on — our team will help identify the right starting point.",
+          image: IMG.abstractAi,
           buttons: [{ label: "Talk to an Expert", href: "/contact" }],
         }),
       ],
@@ -744,6 +783,7 @@ export const defaultContent = {
           kicker: "Get started",
           heading: "Ready to strengthen your",
           accent: "security posture?",
+          image: IMG.cyber,
           buttons: [{ label: "Request a Security Assessment", href: "/contact" }],
         }),
       ],
@@ -781,16 +821,17 @@ export const defaultContent = {
           heading: "From the cable to the",
           accent: "continuity plan",
           groups: [
-            { id: id(), title: "Enterprise Network Solutions", items: ["LAN", "WAN", "VLAN", "Enterprise Wi-Fi", "Network security", "Routing and switching", "Structured cabling", "Remote connectivity", "VPN", "Network optimization"] },
-            { id: id(), title: "Servers, Storage & Data Centers", items: ["Server infrastructure", "Storage systems", "Backup infrastructure", "Virtualization", "Data center design", "High availability", "Disaster recovery", "Business continuity"] },
-            { id: id(), title: "Unified Communications", items: ["IP telephony", "Unified communications", "Enterprise connectivity", "Voice infrastructure"] },
-            { id: id(), title: "Business Continuity & Disaster Recovery", intro: "A technology failure should not become a business failure.", items: ["Backup strategies", "Disaster recovery planning", "Recovery architecture", "Business continuity planning", "Infrastructure resilience"] },
+            { id: id(), title: "Enterprise Network Solutions", image: IMG.cables, items: ["LAN", "WAN", "VLAN", "Enterprise Wi-Fi", "Network security", "Routing and switching", "Structured cabling", "Remote connectivity", "VPN", "Network optimization"] },
+            { id: id(), title: "Servers, Storage & Data Centers", image: IMG.serverRoom, items: ["Server infrastructure", "Storage systems", "Backup infrastructure", "Virtualization", "Data center design", "High availability", "Disaster recovery", "Business continuity"] },
+            { id: id(), title: "Unified Communications", image: IMG.monitor, items: ["IP telephony", "Unified communications", "Enterprise connectivity", "Voice infrastructure"] },
+            { id: id(), title: "Business Continuity & Disaster Recovery", image: IMG.dataCenter, intro: "A technology failure should not become a business failure.", items: ["Backup strategies", "Disaster recovery planning", "Recovery architecture", "Business continuity planning", "Infrastructure resilience"] },
           ],
         }),
         section("statsBand", 3, {
           kicker: "Why it matters",
           heading: "A technology failure should not become",
           accent: "a business failure",
+          image: IMG.serverRoom,
           stats: [
             { value: "4", label: "Infrastructure disciplines under one team" },
             { value: "24/7", label: "Monitoring and technical support" },
@@ -802,6 +843,7 @@ export const defaultContent = {
           kicker: "Next step",
           heading: "Ready to strengthen your",
           accent: "infrastructure?",
+          image: IMG.dataCenter,
           buttons: [{ label: "Assess Your Infrastructure", href: "/contact" }],
         }),
       ],
@@ -839,11 +881,11 @@ export const defaultContent = {
           heading: "Platforms, applications and the care",
           accent: "that keeps them fast",
           groups: [
-            { id: id(), title: "Websites", items: ["Corporate websites", "Institutional websites", "Service websites", "E-commerce platforms", "Campaign websites", "Customer-facing platforms"] },
-            { id: id(), title: "Custom Applications", items: ["SaaS platforms", "Customer portals", "Secure extranets", "Business applications", "Internal platforms", "Web-based management systems"] },
-            { id: id(), title: "Mobile Applications", intro: "Extend your digital services to customers and teams through purpose-built mobile applications.", items: [] },
-            { id: id(), title: "Security by Design", items: ["Secure authentication", "Access management", "Data protection", "Application security", "Secure infrastructure", "Performance", "Scalability"] },
-            { id: id(), title: "Maintenance & Optimization", items: ["Technical maintenance", "Security updates", "Performance optimization", "Speed optimization", "SEO", "Application improvements", "Ongoing support"] },
+            { id: id(), title: "Websites", image: IMG.code, items: ["Corporate websites", "Institutional websites", "Service websites", "E-commerce platforms", "Campaign websites", "Customer-facing platforms"] },
+            { id: id(), title: "Custom Applications", image: IMG.developer, items: ["SaaS platforms", "Customer portals", "Secure extranets", "Business applications", "Internal platforms", "Web-based management systems"] },
+            { id: id(), title: "Mobile Applications", image: IMG.mobileDev, intro: "Extend your digital services to customers and teams through purpose-built mobile applications.", items: [] },
+            { id: id(), title: "Security by Design", image: IMG.lock, items: ["Secure authentication", "Access management", "Data protection", "Application security", "Secure infrastructure", "Performance", "Scalability"] },
+            { id: id(), title: "Maintenance & Optimization", image: IMG.analytics, items: ["Technical maintenance", "Security updates", "Performance optimization", "Speed optimization", "SEO", "Application improvements", "Ongoing support"] },
           ],
         }),
         section("marquee", 3, {
@@ -854,6 +896,7 @@ export const defaultContent = {
           kicker: "Start building",
           heading: "Have a project",
           accent: "in mind?",
+          image: IMG.heroCode,
           buttons: [{ label: "Start Your Digital Project", href: "/contact" }],
         }),
       ],
@@ -891,9 +934,9 @@ export const defaultContent = {
           heading: "Understand. Define.",
           accent: "Build the roadmap.",
           groups: [
-            { id: id(), title: "Understand Where You Are.", items: ["IT infrastructure", "Network environment", "Cybersecurity posture", "Applications", "Cloud environment", "Operational processes", "Technical capabilities"] },
-            { id: id(), title: "Define Where You Need to Go.", items: ["Technology priorities", "Digital transformation objectives", "Security requirements", "Infrastructure roadmap", "Implementation priorities", "Investment requirements"] },
-            { id: id(), title: "Build the Roadmap.", items: ["IT assessments", "Technology audits", "Requirements analysis", "Solution architecture", "Digital transformation strategy", "Project planning", "Technology selection", "Implementation planning"] },
+            { id: id(), title: "Understand Where You Are.", image: IMG.consulting, items: ["IT infrastructure", "Network environment", "Cybersecurity posture", "Applications", "Cloud environment", "Operational processes", "Technical capabilities"] },
+            { id: id(), title: "Define Where You Need to Go.", image: IMG.strategy, items: ["Technology priorities", "Digital transformation objectives", "Security requirements", "Infrastructure roadmap", "Implementation priorities", "Investment requirements"] },
+            { id: id(), title: "Build the Roadmap.", image: IMG.workshop, items: ["IT assessments", "Technology audits", "Requirements analysis", "Solution architecture", "Digital transformation strategy", "Project planning", "Technology selection", "Implementation planning"] },
           ],
         }),
         section("textIntro", 3, {
@@ -910,6 +953,7 @@ export const defaultContent = {
           kicker: "Let's talk",
           heading: "Discuss your technology",
           accent: "roadmap",
+          image: IMG.meetingRoom,
           buttons: [{ label: "Discuss Your Technology Roadmap", href: "/contact" }],
         }),
       ],
@@ -986,6 +1030,7 @@ export const defaultContent = {
           kicker: "Get started",
           heading: "Let's talk",
           accent: "managed IT",
+          image: IMG.serverRoom,
           buttons: [{ label: "Discuss Managed IT", href: "/contact" }],
         }),
       ],
@@ -1081,6 +1126,7 @@ export const defaultContent = {
           accent: "Build careers.",
           subtext:
             "Whether you are an individual pursuing certification or an organization closing a team-wide skills gap, we will map the right pathway.",
+          image: IMG.people,
           buttons: [
             { label: "Explore Training Programs", href: "/contact" },
             { label: "Request Corporate Training", href: "/contact" },
@@ -1120,18 +1166,19 @@ export const defaultContent = {
           heading: "Different industries face different",
           accent: "technology challenges",
           cards: [
-            { id: id(), title: "Financial Services", description: "Security, availability and trust are critical. We support financial organizations with cybersecurity, network infrastructure, IAM, business continuity, disaster recovery, secure platforms and IT consulting." },
-            { id: id(), title: "Government & Public Institutions", description: "Public institutions manage sensitive information and essential services. We build secure, resilient environments through infrastructure security, network solutions, assessments, secure applications and training." },
-            { id: id(), title: "SMEs & Mid-Sized Businesses", description: "Enterprise-grade technology without a large internal IT department — flexible support across infrastructure, cybersecurity, cloud, websites, applications and managed IT." },
-            { id: id(), title: "Startups", description: "Technology should enable growth, not slow it down. We help startups establish scalable technology foundations from the beginning." },
-            { id: id(), title: "International Organizations", description: "We support organizations requiring structured, secure and reliable technology environments." },
-            { id: id(), title: "Industrial Organizations", description: "Modern industrial operations depend on connected infrastructure, data and digital systems — supported with infrastructure, cybersecurity, networking, automation and transformation." },
+            { id: id(), title: "Financial Services", description: "Security, availability and trust are critical. We support financial organizations with cybersecurity, network infrastructure, IAM, business continuity, disaster recovery, secure platforms and IT consulting.", image: IMG.finance },
+            { id: id(), title: "Government & Public Institutions", description: "Public institutions manage sensitive information and essential services. We build secure, resilient environments through infrastructure security, network solutions, assessments, secure applications and training.", image: IMG.government },
+            { id: id(), title: "SMEs & Mid-Sized Businesses", description: "Enterprise-grade technology without a large internal IT department — flexible support across infrastructure, cybersecurity, cloud, websites, applications and managed IT.", image: IMG.office },
+            { id: id(), title: "Startups", description: "Technology should enable growth, not slow it down. We help startups establish scalable technology foundations from the beginning.", image: IMG.startup },
+            { id: id(), title: "International Organizations", description: "We support organizations requiring structured, secure and reliable technology environments.", image: IMG.earthNet },
+            { id: id(), title: "Industrial Organizations", description: "Modern industrial operations depend on connected infrastructure, data and digital systems — supported with infrastructure, cybersecurity, networking, automation and transformation.", image: IMG.industrial },
           ],
         }),
         section("statsBand", 3, {
           kicker: "The objective stays the same",
           heading: "Whatever your industry",
           accent: "the goal is constant",
+          image: IMG.circuit,
           stats: [
             { value: "6", label: "Sectors served across the region" },
             { value: "8", label: "Technology capabilities available to each" },
@@ -1144,6 +1191,7 @@ export const defaultContent = {
           kicker: "Let's talk",
           heading: "Let's talk about",
           accent: "your industry",
+          image: IMG.meeting,
           buttons: [{ label: "Talk to an Expert", href: "/contact" }],
         }),
       ],
@@ -1180,12 +1228,12 @@ export const defaultContent = {
           heading: "Explore our",
           accent: "topics",
           cards: [
-            { id: id(), title: "Cybersecurity", description: "Threats, vulnerabilities, security awareness and practical protection strategies." },
-            { id: id(), title: "Infrastructure", description: "Networks, servers, cloud, virtualization and data centers." },
-            { id: id(), title: "Digital Transformation", description: "How organizations can use technology to improve operations and competitiveness." },
-            { id: id(), title: "AI & Automation", description: "Emerging technologies and practical applications for business." },
-            { id: id(), title: "IT Management", description: "Technology strategy, governance and operational best practices." },
-            { id: id(), title: "Careers & Certifications", description: "Skills, certifications and career pathways for technology professionals." },
+            { id: id(), title: "Cybersecurity", description: "Threats, vulnerabilities, security awareness and practical protection strategies.", image: IMG.cyber },
+            { id: id(), title: "Infrastructure", description: "Networks, servers, cloud, virtualization and data centers.", image: IMG.serverRoom },
+            { id: id(), title: "Digital Transformation", description: "How organizations can use technology to improve operations and competitiveness.", image: IMG.abstractAi },
+            { id: id(), title: "AI & Automation", description: "Emerging technologies and practical applications for business.", image: IMG.automation },
+            { id: id(), title: "IT Management", description: "Technology strategy, governance and operational best practices.", image: IMG.monitor },
+            { id: id(), title: "Careers & Certifications", description: "Skills, certifications and career pathways for technology professionals.", image: IMG.training },
           ],
         }),
         section("marquee", 3, {
@@ -1196,6 +1244,7 @@ export const defaultContent = {
           kicker: "Stay in the loop",
           heading: "Practical perspectives, written to be",
           accent: "used",
+          image: IMG.code,
           subtext:
             "CybernaNet believes education is an essential part of a secure digital ecosystem. Tell us what you'd like us to cover.",
           buttons: [{ label: "Explore Insights", href: "/insights" }, { label: "Suggest a Topic", href: "/contact" }],
@@ -1322,12 +1371,49 @@ const FR_FAQS = [
   },
 ];
 
+const AR_FAQS = [
+  {
+    id: id(),
+    question: "هل تعملون مع منظمات خارج تشاد؟",
+    answer:
+      "نعم. يقع مقرنا في نجامينا ونعمل مع الشركات والمؤسسات العامة والمنظمات الدولية في جميع أنحاء المنطقة — في الموقع وعن بُعد ومن خلال خدمات الإدارة المُدارة.",
+  },
+  {
+    id: id(),
+    question: "هل يمكنكم تولّي بيئة أنشأها طرف آخر؟",
+    answer:
+      "بانتظام. نبدأ بتقييم البنية التحتية والتطبيقات ووضع الأمان القائمة، ثم نتفق على خطة انتقال قبل إجراء أي تغيير في بيئة الإنتاج.",
+  },
+  {
+    id: id(),
+    question: "هل تقدّمون الاستشارات فقط أم التنفيذ أيضًا؟",
+    answer:
+      "كلاهما. خلافًا للشركات الاستشارية التي تكتفي بالتوصيات، تستطيع CybernaNet تنفيذ الحلول التي تصممها وتأمينها ثم دعمها: التقييم، التخطيط، التنفيذ، التأمين، الدعم.",
+  },
+  {
+    id: id(),
+    question: "ما مدى سرعة استجابتكم لحادث أمني؟",
+    answer:
+      "جاهزية الاستجابة للحوادث جزء من خدماتنا المُدارة، مع مراقبة ودعم على مدار الساعة طوال أيام الأسبوع. أما بالنسبة للمنظمات التي لا نديرها بعد، فتواصل معنا وسنخبرك بصدق بما يمكننا تعبئته ومدى سرعته.",
+  },
+  {
+    id: id(),
+    question: "هل يمكن تقديم التدريب لفريقنا بالكامل؟",
+    answer:
+      "نعم. تُصمَّم البرامج المؤسسية حول متطلبات الأمن السيبراني لديك، وبيئة الشبكة، وبنية الأنظمة، وسياسات تقنية المعلومات، وفجوات المهارات، وأهداف الشهادات — حضوريًا أو عبر الإنترنت مع مدرّب أو عن بُعد أو عبر التعلم الإلكتروني.",
+  },
+];
+
 // Each FAQ carries its own locale; the public endpoint filters on it and on
 // `enabled`, so both fields have to be seeded or nothing renders.
 const withDefaults = (list, locale) =>
   list.map((f, i) => ({ ...f, locale, enabled: true, order: i, category: "General" }));
 
-export const defaultFaqs = [...withDefaults(EN_FAQS, "en"), ...withDefaults(FR_FAQS, "fr")];
+export const defaultFaqs = [
+  ...withDefaults(EN_FAQS, "en"),
+  ...withDefaults(FR_FAQS, "fr"),
+  ...withDefaults(AR_FAQS, "ar"),
+];
 
 export const defaultSettings = {
   leadRecipients: ["CybernaNet@gmail.com"],
@@ -1351,6 +1437,15 @@ export const defaultSettings = {
       ctaLabel: "Visiter notre site",
       ctaUrl: "https://example.com",
       footer: "— L'équipe CybernaNet",
+    },
+    ar: {
+      subject: "شكرًا لتواصلك مع CybernaNet",
+      greeting: "مرحبًا {{name}}،",
+      body:
+        "شكرًا لتواصلك مع CybernaNet! لقد استلمنا رسالتك وسيتواصل معك أحد أعضاء فريقنا قريبًا لتحديد نقطة الانطلاق المناسبة لمشروعك.\n\nوفي غضون ذلك، لا تتردد في الرد مباشرة على هذا البريد الإلكتروني بأي تفاصيل إضافية.",
+      ctaLabel: "زيارة موقعنا",
+      ctaUrl: "https://example.com",
+      footer: "— فريق CybernaNet",
     },
   },
   smtp: {

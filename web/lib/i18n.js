@@ -2,11 +2,15 @@
 // ("/about"); every other locale sits under its own prefix ("/fr/about").
 // Flipping which language is default is a one-line change here plus the same
 // change on the server.
-export const LOCALES = ["en", "fr"];
+export const LOCALES = ["en", "fr", "ar"];
 export const DEFAULT_LOCALE = "en";
 
-export const LOCALE_LABELS = { en: "EN", fr: "FR" };
-export const LOCALE_NAMES = { en: "English", fr: "Français" };
+export const LOCALE_LABELS = { en: "EN", fr: "FR", ar: "ع" };
+export const LOCALE_NAMES = { en: "English", fr: "Français", ar: "العربية" };
+
+// Right-to-left locales, so <html dir> can flip for Arabic.
+export const RTL_LOCALES = ["ar"];
+export const isRtl = (value) => RTL_LOCALES.includes(value);
 
 export const isLocale = (value) => LOCALES.includes(value);
 export const normalizeLocale = (value) => (isLocale(value) ? value : DEFAULT_LOCALE);

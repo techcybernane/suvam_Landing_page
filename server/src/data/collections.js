@@ -20,7 +20,12 @@ export const faqs = new Collection("faqs", () => defaultFaqs);
 export const media = new Collection("media", () => []);
 export const leads = new Collection("leads", () => []);
 
-const DICTIONARIES = { fr: readDictionary("fr") };
+// A translation dictionary per non-default locale (e.g. fr, ar). Missing files
+// just mean that locale falls back to English, so adding a language is a matter
+// of listing it in LOCALES and dropping in translations.<locale>.json.
+const DICTIONARIES = Object.fromEntries(
+  LOCALES.filter((l) => l !== DEFAULT_LOCALE).map((l) => [l, readDictionary(l)])
+);
 
 /** The English source tree translated into `locale`, used to seed a new language. */
 function buildLocale(locale, source = defaultContent) {

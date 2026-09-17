@@ -1,7 +1,8 @@
-import { ArrowUpRight, Mail, Phone, MapPin, ArrowUp } from "lucide-react";
+import { ArrowUpRight, Mail, Phone, MapPin, LayoutDashboard } from "lucide-react";
 import SmartLink from "../ui/SmartLink.jsx";
 import Reveal from "../ui/Reveal.jsx";
 import LocaleSwitch from "../ui/LocaleSwitch.jsx";
+import ScrollToTop from "../ui/ScrollToTop.jsx";
 import { t } from "../../lib/ui-strings.js";
 
 // The copyright is a single content string; linkify the "kodeclamp.com" credit
@@ -82,10 +83,12 @@ export default function Footer({ brand, footer, locale }) {
                 {s.label}
               </SmartLink>
             ))}
-            <a href="#hero" className="group inline-flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-bone/40 transition-colors hover:text-signal">
-              {t(locale, "backToTop")}
-              <ArrowUp className="h-3.5 w-3.5 transition-transform duration-300 ease-editorial group-hover:-translate-y-0.5" />
+            {/* Plain anchor: /admin sits outside the locale-prefixed routing. */}
+            <a href="/admin" className="group inline-flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-bone/40 transition-colors hover:text-signal">
+              <LayoutDashboard className="h-3.5 w-3.5" />
+              Dashboard
             </a>
+            <ScrollToTop inline />
           </div>
         </div>
       </div>
