@@ -13,18 +13,26 @@ export function ensureSeeded() {
     faqs.replaceAll(defaultFaqs);
   }
 
-  if (users.all().length === 0) {
-    const email = process.env.ADMIN_EMAIL || "admin@vertexa.io";
-    const password = process.env.ADMIN_PASSWORD || "ChangeMe123!";
-    const passwordHash = bcrypt.hashSync(password, 10);
+  const email = process.env.ADMIN_EMAIL || "admin@vertexa.io";
+  const password = process.env.ADMIN_PASSWORD || "ChangeMe123!";
+  const admin = users.all().find((u) => u.role === "admin");
+
+  if (!admin) {
+    // First boot: create the admin from the env vars (or the dev defaults).
     users.create({
       id: randomUUID(),
       name: "Admin",
       email,
-      passwordHash,
+      passwordHash: bcrypt.hashSync(password, 10),
       role: "admin",
     });
     console.log(`Seeded admin user: ${email} (password from ADMIN_PASSWORD env var)`);
+  } else if (process.env.ADMIN_RESET === "true") {
+    // Recovery path for headless hosts (no shell): set ADMIN_RESET=true plus the
+    // desired ADMIN_EMAIL/ADMIN_PASSWORD and restart, and the existing admin is
+    // forced back to those credentials. Unset ADMIN_RESET again afterwards.
+    users.updateById(admin.id, { email, passwordHash: bcrypt.hashSync(password, 10) });
+    console.log(`Reset admin credentials to ${email} (ADMIN_RESET=true — remove that env var now).`);
   }
 }
 
