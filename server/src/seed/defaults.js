@@ -38,7 +38,7 @@ const IMG = {
   government: img("photo-1529107386315-e1a2ed48a620"),    // institutional building
   startup: img("photo-1521737604893-d14cc237f11d"),       // founders at work
   industrial: img("photo-1581092160562-40aa08e78837"),    // industry / engineering
-  cloudTech: img("photo-1544890225-2f3faec4cd60"),         // cloud infrastructure
+  cloudTech: img("photo-1451187580459-43490279c0fa"),      // global network / cloud — bright, reads well under the scrim
   developer: img("photo-1461749280684-dccba630e2f6"),      // code on screen
   mobileDev: img("photo-1512941937669-90a1b58e7e9c"),      // mobile app
   consulting: img("photo-1552664730-d307ca884978"),        // strategy session

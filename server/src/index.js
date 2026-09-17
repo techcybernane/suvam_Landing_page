@@ -18,21 +18,36 @@ import { ensureSeeded } from "./seed/seed.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 
-// Comma-separated allow-list so one deployment can serve the local dev origin,
-// the Vercel production domain and its preview domains.
-const ALLOWED_ORIGINS = (process.env.CLIENT_ORIGIN || "http://localhost:3000,http://localhost:5173")
-  .split(",")
-  .map((o) => o.trim())
-  .filter(Boolean);
+// Origins allowed to make credentialed browser requests. Vercel's /api proxy
+// forwards the visitor's Origin header to this API, so the production domain has
+// to be on the list even though the request is technically same-origin in the
+// browser. These built-in defaults mean a standard deploy works with no extra
+// config; CLIENT_ORIGIN (comma-separated) *adds* any further origins.
+const DEFAULT_ORIGINS = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "https://cybernanet.com",
+  "https://www.cybernanet.com",
+];
+const ALLOWED_ORIGINS = [
+  ...DEFAULT_ORIGINS,
+  ...(process.env.CLIENT_ORIGIN || "")
+    .split(",")
+    .map((o) => o.trim())
+    .filter(Boolean),
+];
+
+// Vercel preview deployments get a random *.vercel.app subdomain; allow them so
+// the admin works on preview builds too. Auth still requires valid credentials.
+const isPreviewOrigin = (origin) => /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(origin);
 
 app.use(
   cors({
     origin(origin, cb) {
       // Same-origin/server-to-server requests arrive without an Origin header.
-      // In practice the browser never calls this API cross-origin: Next proxies
-      // /api through its own domain (see web/next.config.js), which is what
-      // keeps the httpOnly auth cookie same-site.
-      if (!origin || ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
+      if (!origin || ALLOWED_ORIGINS.includes(origin) || isPreviewOrigin(origin)) {
+        return cb(null, true);
+      }
       cb(new Error(`Origin ${origin} is not allowed by CORS`));
     },
     credentials: true,

@@ -34,7 +34,11 @@ export default function LocaleSwitch({ className = "", tone = "dark" }) {
             hrefLang={locale}
             aria-current={on ? "true" : undefined}
             title={LOCALE_NAMES[locale]}
-            className={`rounded-pill px-2.5 py-1.5 font-mono text-[0.66rem] font-semibold uppercase tracking-[0.12em] transition-all duration-300 ease-editorial ${
+            className={`inline-flex min-w-[2.1rem] items-center justify-center rounded-pill px-3 py-2 font-mono font-semibold uppercase tracking-[0.12em] transition-all duration-300 ease-editorial sm:min-w-0 sm:px-2.5 sm:py-1.5 ${
+              // Arabic is a single glyph and renders visually smaller than the
+              // Latin labels — size it up so it is legible and easy to tap.
+              locale === "ar" ? "text-base leading-none sm:text-[0.95rem]" : "text-[0.72rem] sm:text-[0.66rem]"
+            } ${
               on
                 ? light
                   ? "bg-void text-bone"

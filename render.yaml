@@ -28,11 +28,22 @@ services:
       - key: JWT_SECRET
         generateValue: true
       # Set these in the Render dashboard before the first boot.
+      # CLIENT_ORIGIN is optional now — cybernanet.com (apex + www) and Vercel
+      # preview domains are allowed by default; use it to ADD other origins.
       - key: CLIENT_ORIGIN
         sync: false
       - key: ADMIN_EMAIL
         sync: false
       - key: ADMIN_PASSWORD
+        sync: false
+      # Set ADMIN_RESET=true (with ADMIN_EMAIL/ADMIN_PASSWORD) and restart to
+      # force the existing admin back to those credentials; unset it afterwards.
+      - key: ADMIN_RESET
+        sync: false
+      # Set SEED_RESET=true and restart to rebuild content + FAQs from the seed
+      # (picks up new imagery/sections/copy). Discards admin content edits; unset
+      # it afterwards.
+      - key: SEED_RESET
         sync: false
       - key: SMTP_HOST
         sync: false

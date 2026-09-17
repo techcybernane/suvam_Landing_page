@@ -84,6 +84,16 @@ export function saveContent(next, locale = DEFAULT_LOCALE) {
 }
 
 /**
+ * Overwrite the whole content store with a freshly-built one from the seed
+ * defaults (all locales). Used by the SEED_RESET recovery flag so a headless
+ * host can pick up seed/content changes — the store is never re-seeded once the
+ * file exists. This discards content edits made through the admin panel.
+ */
+export function resetContent() {
+  return writeJSON("content", buildDefaultStore());
+}
+
+/**
  * Auto-response templates used to be a single flat object. Anything written
  * before i18n is folded under the default locale on read, and any locale added
  * later is seeded from the defaults, so existing installs need no manual step.
