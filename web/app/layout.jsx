@@ -6,7 +6,19 @@ export const metadata = {
   title: "CybernaNet — Innovate. Secure. Transform.",
   description:
     "CybernaNet helps organizations build, secure and transform their digital environments through integrated technology solutions, cybersecurity, infrastructure engineering, software development and professional training.",
-  icons: { icon: "/favicon.svg" },
+  // PNG/ICO (≥48px, square) so Google Search can show the brand mark in results.
+  // SVG alone is not listed among Google's supported favicon formats.
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/favicon-48.png", type: "image/png", sizes: "48x48" },
+      { url: "/favicon-96.png", type: "image/png", sizes: "96x96" },
+      { url: "/favicon-192.png", type: "image/png", sizes: "192x192" },
+      { url: "/favicon.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    shortcut: "/favicon.ico",
+  },
 };
 
 export default async function RootLayout({ children }) {

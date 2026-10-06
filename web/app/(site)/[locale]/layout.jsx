@@ -4,6 +4,7 @@ import ScrollProgress from "../../../components/ui/ScrollProgress.jsx";
 import ScrollToTop from "../../../components/ui/ScrollToTop.jsx";
 import SmoothScroll from "../../../components/ui/SmoothScroll.jsx";
 import { getSiteMeta } from "../../../lib/server-api.js";
+import { FALLBACK_META } from "../../../lib/fallback-meta.js";
 import { normalizeLocale } from "../../../lib/i18n.js";
 
 // The locale segment is a rewrite target for the default language, so this
@@ -12,16 +13,13 @@ export default async function SiteLayout({ children, params }) {
   const { locale: raw } = await params;
   const locale = normalizeLocale(raw);
 
-  let meta = null;
+  let meta = FALLBACK_META;
   try {
     meta = await getSiteMeta(locale);
-  } catch {
-    return (
-      <div className="flex min-h-screen flex-col items-center justify-center gap-3 bg-void px-6 text-center">
-        <h1 className="text-fluid-xl font-semibold text-bone">Couldn&apos;t load the site</h1>
-        <p className="text-fluid-sm text-bone/50">Make sure the API server is running on port 4000.</p>
-      </div>
-    );
+  } catch (err) {
+    // Keep a branded shell online when the CMS is down; page content handles
+    // its own unavailable state. Log the real cause for operators.
+    console.error("[site-layout] meta fetch failed:", err?.message || err);
   }
 
   return (

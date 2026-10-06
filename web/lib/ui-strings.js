@@ -53,6 +53,13 @@ const STRINGS = {
     notFoundTitle: "Page not found",
     notFoundBody: "The page you're looking for doesn't exist.",
     notFoundCta: "Back to home",
+
+    // CMS / API unavailable
+    unavailableKicker: "Temporarily unavailable",
+    unavailableTitle: "We're refreshing the site",
+    unavailableBody:
+      "Content is briefly unavailable. Please try again in a moment — your visit is safe.",
+    unavailableRetry: "Try again",
   },
 
   fr: {
@@ -96,6 +103,12 @@ const STRINGS = {
     notFoundTitle: "Page introuvable",
     notFoundBody: "La page que vous cherchez n'existe pas.",
     notFoundCta: "Retour à l'accueil",
+
+    unavailableKicker: "Temporairement indisponible",
+    unavailableTitle: "Le site se met à jour",
+    unavailableBody:
+      "Le contenu est brièvement indisponible. Réessayez dans un instant — votre visite est en sécurité.",
+    unavailableRetry: "Réessayer",
   },
 
   ar: {
@@ -139,6 +152,11 @@ const STRINGS = {
     notFoundTitle: "الصفحة غير موجودة",
     notFoundBody: "الصفحة التي تبحث عنها غير موجودة.",
     notFoundCta: "العودة إلى الرئيسية",
+
+    unavailableKicker: "غير متاح مؤقتًا",
+    unavailableTitle: "نقوم بتحديث الموقع",
+    unavailableBody: "المحتوى غير متاح لفترة وجيزة. حاول مرة أخرى بعد لحظات.",
+    unavailableRetry: "إعادة المحاولة",
   },
 };
 

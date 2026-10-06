@@ -150,15 +150,17 @@ that cannot live in `vercel.json`, and the build fails without it.
 Add one environment variable:
 
 ```
-BACKEND_ORIGIN   https://<api-domain>     # no trailing slash
+BACKEND_ORIGIN   https://<api-domain>     # no trailing slash — REQUIRED
 ```
 
-`web/vercel.json` handles the rest (framework, region `cdg1` for francophone
-Africa, security headers, `noindex` on `/admin`).
+Without `BACKEND_ORIGIN`, Server Components cannot reach the CMS and visitors
+see a branded “temporarily unavailable” page instead of content. Set it in the
+Vercel project → Settings → Environment Variables for Production (and Preview
+if you use preview deploys), then redeploy.
 
-`web/next.config.js` proxies `/api` and `/uploads` through to the API, so the
-browser only ever talks to the Vercel domain. That is what keeps the httpOnly
-auth cookie same-site — do not point the admin UI straight at the API domain.
+`web/app/api/[...path]` and `web/app/uploads/[...path]` proxy browser traffic to
+that origin at **request time**, so the httpOnly auth cookie stays same-site.
+Do not point the admin UI straight at the API domain.
 
 ### 3. After the first deploy
 

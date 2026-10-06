@@ -45,10 +45,13 @@ app.use(
   cors({
     origin(origin, cb) {
       // Same-origin/server-to-server requests arrive without an Origin header.
+      // Reject unknown browser origins with `false` — throwing here turns into a
+      // 500 and breaks preflights instead of a clean CORS failure.
       if (!origin || ALLOWED_ORIGINS.includes(origin) || isPreviewOrigin(origin)) {
         return cb(null, true);
       }
-      cb(new Error(`Origin ${origin} is not allowed by CORS`));
+      console.warn(`[cors] blocked origin: ${origin}`);
+      return cb(null, false);
     },
     credentials: true,
   })

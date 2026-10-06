@@ -17,7 +17,9 @@ export default function PublicLayout() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-3 bg-cream px-6 text-center">
         <h1 className="text-xl font-bold text-ink">Couldn't load the site</h1>
-        <p className="text-sm text-ink-soft">{error} — make sure the API server is running.</p>
+        <p className="text-sm text-ink-soft">
+          {error || "Content is temporarily unavailable. Please try again in a moment."}
+        </p>
       </div>
     );
   }
