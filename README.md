@@ -144,8 +144,12 @@ Confirm it is up: `curl https://<api-domain>/api/health`
 
 ### 2. Deploy the frontend to Vercel
 
-Import the repo, then **set Root Directory to `web`** — this is the one setting
-that cannot live in `vercel.json`, and the build fails without it.
+Import the repo. The Next app lives in `web/`.
+
+- Preferred: set **Root Directory** to `web` in the Vercel project settings
+  (Project → Settings → Build and Deployment).
+- Fallback: a root `vercel.json` already sets `"rootDirectory": "web"`, so
+  projects that were linked at the repository root still build the Next app.
 
 Add one environment variable:
 
